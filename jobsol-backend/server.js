@@ -18,7 +18,9 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 
-app.use("/api/users",require('./routes/userRoutes'))
+app.use("/api/users",require('./routes/userRoutes'));
+
+app.use("/api/auth",require("./routes/authRoutes"));
 
 //to recive data in request
 app.use(express.urlencoded({extended:true}))
