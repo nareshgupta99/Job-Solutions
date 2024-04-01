@@ -48,8 +48,8 @@ mysqlpool.query("select 1").then(()=>{
     app.listen(PORT,()=>{
         console.log(`server is running ${PORT}`)
     })
-}).catch((err)=>{
-    console.log(err)
+}).catch((error)=>{
+    console.log(error)
 })
 
 
