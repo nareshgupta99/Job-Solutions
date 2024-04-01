@@ -5,6 +5,9 @@ const mysqlpool = require("./config/db");
 const cors=require("cors");
 const app=express();
 
+
+
+
 //configure dotenv file
 
 dotenv.config();
@@ -22,6 +25,10 @@ app.use("/api/users",require('./routes/userRoutes'));
 app.use("/api/auth",require("./routes/authRoutes"));
 
 
+
+
+
+
 //to recive data in request
 app.use(express.urlencoded({extended:true}))
 
@@ -33,6 +40,7 @@ app.use(cors({
 app.get("/",(req,res)=>{
     res.send({message:"hello"})
 })
+
 
 
 mysqlpool.query("select 1").then(()=>{

@@ -5,7 +5,8 @@ const router=express.Router();
 
 //get all user
 
-router.get("/",getAllUser);
+router.get("/");
+
 
 router.post('/create',createUser);
 

@@ -98,18 +98,18 @@ const forgotPassword = async (req, res, next) => {
         const subject = "password change request"
         const url = `${req.protocol}://${req.get('host')}/api/auth/user/reset-password/${reset_token}`;
         const message = `To reset this password click here \n\n ${url}`
-        try{
+        try {
             await sendEmail({ email, subject, message });
             res.status(200).send({
-                message:"email sent successfully check your inbox"
+                message: "email sent successfully check your inbox"
             })
-        }catch(err){
+        } catch (err) {
             res.status(500).json({
-                message:"email service error",
+                message: "email service error",
                 err
             })
         }
-        
+
         // res.status(200);
     } catch (err) {
         res.status(500).json({
@@ -118,11 +118,40 @@ const forgotPassword = async (req, res, next) => {
     }
 }
 
-const resetPassword = (req, res) => {
-    const {resetToken}=req.params;
-    
-    createHash(resetToken);
+const resetPassword = async (req, res) => {
+    const { resetToken } = req.params;
+    const requestedHash = createHash(resetToken);
+    console.log(requestedHash)
+    try {
+        const data = await mysqlpool.query("select * from user where password_reset_token=?", [requestedHash]);
+        if (data[0].length == 0) {
+            res.status(500).json({
+                message: "something went wrong"
+            })
+        }
+        const expires_in = new Date(data[0][0].expires_in);
+        const currentDateTime = new Date();
+        console.log("expires_in",expires_in);
+        console.log(new Date())
+        if(expires_in>currentDateTime){
 
+            mysqlpool.query("update user set password =? where password_reset_token=?", [req.body.password, requestedHash])
+            res.status(200).json({
+                message: "password set successfully"
+            })
+        }else{
+            res.status(500).json({
+                message: "time is expire"
+            })
+        }
+
+
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            message: "something went wrong"
+        })
+    }
 }
 
 
@@ -143,6 +172,11 @@ const genrateToken = (username, role, is_enabled) => {
     return token;
 }
 
+const verifyEmail = (req, res) => {
+    const { verifyToken } = req.params;
+
+}
+
 const loadUserByUserName = async (userName) => {
     const user = await mysqlpool.query(`select name ,email,is_enabled,password from user where email='${userName}'`);
     return user;
@@ -152,4 +186,4 @@ const loadUserByUserName = async (userName) => {
 
 
 
-module.exports = { signupUser, loginUser, forgotPassword, resetPassword }
+module.exports = { signupUser, loginUser, forgotPassword, resetPassword, verifyEmail }
