@@ -4,6 +4,9 @@ const morgan=require("morgan")
 const mysqlpool = require("./config/db");
 const cors=require("cors");
 const app=express();
+const swaggerDocs =require("./config/swagger");
+const swaggerUiExpress=require("swagger-ui-express");   
+// const sequelize=require("./config/db")
 
 
 
@@ -25,7 +28,7 @@ app.use("/api/users",require('./routes/userRoutes'));
 app.use("/api/auth",require("./routes/authRoutes"));
 
 
-
+app.use("/api-docs",swaggerUiExpress.serve,swaggerUiExpress.setup(swaggerDocs));
 
 
 
@@ -55,3 +58,8 @@ mysqlpool.query("select 1").then(()=>{
 
 
 
+//      sequelize.authenticate().then(()=>{
+//          console.log('Connection has been established successfully.');
+//      }).catch ((error)=> {
+//     console.error('Unable to connect to the database:', error);
+//   })
