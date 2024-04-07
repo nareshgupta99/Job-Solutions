@@ -12,7 +12,7 @@ const swaggerOptions={
             servers:["http://localhost:4000"]
         }
     },
-    apis:["./routes/authRoutes.js"]
+    apis:["./routes/*.js"]
 };
 
 const swaggerDocs=swaggerJsdocs(swaggerOptions);

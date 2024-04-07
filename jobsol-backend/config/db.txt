@@ -1,0 +1,69 @@
+ drop database jobsolution;
+create database jobsolution;
+use jobsolution;
+
+
+create table token(token_id integer primary key auto_increment,password_reset_token varchar(255),
+	expires_in datetime
+);
+
+
+create table candidate(candidate_id integer primary key ,name varchar(255), email varchar(255) unique, phone varchar(255),
+	 password varchar(255),is_enabled boolean,description varchar(255),expected_sallery integer,
+	 token_id integer , foreign key(token_id) references token (token_id),certification_id integer
+ );
+ 
+
+
+create table education(education_id integer primary key,degree varchar(255),
+	insituation varchar(255),mode varchar(255) ,start_date Date,end_date Date,
+	Grading integer,Maks integer
+);
+create table candidate_education(candidate_id integer,education_id integer ,
+	foreign key (candidate_id) references candidate(candidate_id),
+	foreign key (education_id) references education(education_id)
+ );
+ 
+
+create table Employer(employer_id  integer auto_increment primary key, email varchar(255) unique not null,
+	company_name varchar(255) not null,designation varchar(255) not null,
+    Number_employee integer not null, phone varchar(255) ,password varchar(255),
+    is_enabled tinyint ,contact_person varchar (255)
+) ;
+
+
+create table skill(skill_id integer auto_increment primary key,name varchar(255));
+
+create table skill_user_employee(skill_id integer ,employer_id integer ,candidate_id integer,
+foreign key (skill_id) references skill(skill_id),
+foreign key (employer_id) references employer(employer_id),
+foreign key (candidate_id) references candidate(candidate_id)
+);
+
+
+
+
+create table job(job_id  integer auto_increment primary key, experince_required integer not null,
+	location varchar(255) not null,job_type varchar(255) not null,
+    sallery_min integer not null,sallery_max integer not null
+) ;
+
+
+create table Profile(profile_id integer primary key,link varchar(255),name varchar(255), 
+	candidate_id integer ,foreign key (candidate_id) references candidate(candidate_id)
+);
+
+create table certification(certification_id integer primary key, technology varchar(255) ,discription varchar(255));
+
+create table candidate_certification(certification_id integer ,candidate_id integer,
+	foreign key (candidate_id) references candidate(candidate_id),
+    foreign key (certification_id) references certification(certification_id)
+);
+
+alter table job add column discription varchar(255);
+
+create table employer_job(job_id integer ,employer_id integer,
+	foreign key (job_id) references job(job_id),
+    foreign key (employer_id) references employer(employer_id)
+);
+

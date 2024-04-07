@@ -5,8 +5,10 @@ const mysqlpool = require("./config/db");
 const cors=require("cors");
 const app=express();
 const swaggerDocs =require("./config/swagger");
-const swaggerUiExpress=require("swagger-ui-express");   
-// const sequelize=require("./config/db")
+const swaggerUiExpress=require("swagger-ui-express");
+const {checkJwt} = require("./utils/checkAuth");
+
+
 
 
 
@@ -24,11 +26,10 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 
-app.use("/api/users",require('./routes/userRoutes'));
+
 app.use("/api/auth",require("./routes/authRoutes"));
-
-
 app.use("/api-docs",swaggerUiExpress.serve,swaggerUiExpress.setup(swaggerDocs));
+app.use("/api",checkJwt,require('./routes/jobRoutes'));
 
 
 
@@ -46,6 +47,17 @@ app.get("/",(req,res)=>{
 
 
 
+// app.use(Candidate);
+// // app.use(pply)
+// app.use(Cerification);
+// app.use(Education);
+// app.use(Job)
+// app.use(Employer)
+// app.use(Skill)
+// app.use(WorkExperince)
+// app.use(Token)
+
+
 mysqlpool.query("select 1").then(()=>{
     console.log("database connection success")
     app.listen(PORT,()=>{
@@ -55,11 +67,3 @@ mysqlpool.query("select 1").then(()=>{
     console.log(error)
 })
 
-
-
-
-//      sequelize.authenticate().then(()=>{
-//          console.log('Connection has been established successfully.');
-//      }).catch ((error)=> {
-//     console.error('Unable to connect to the database:', error);
-//   })

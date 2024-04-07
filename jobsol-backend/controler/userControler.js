@@ -1,48 +1,44 @@
-const mysqlpool = require("../config/db")
+const mysqlpool = require("../config/db");
+const {checkJwt} = require("../utils/checkAuth");
 
-const getAllUser=async (req,res)=>{
-    const data=await mysqlpool.query("select * from user");
-    if(data){
-        try{
-            console.log("in try block")
-            console.log(data)
-            res.status(200).send({
-                success:true,
-                data:data[0]
-            })
-        }catch(err){
-            console.log(err);
-            res.status(500).send({
-                success:false,
-                message:"error in gettin all students",
-                error:err
-            })
+
+
+    const UploadPicture = async (req, res) => {
+        // try {
+        //     // const filename = req.file.filename;
+        //     console.log(req.file)
+        //     // const filePath = req.file.path;
+        //     // const [result] = await mysqlpool.query('INSERT INTO profile_pics (filename, path) VALUES (?, ?)', [filename, filePath]);
+        //     // connection.release();
+        //     // res.status(200).send('Profile picture uploaded successfully');
+        // } catch (error) {
+        //     console.error(error);
+        //     res.status(500).send('Error uploading profile picture');
+        // }
+        try {
+            console.log(req.file); // Check if file is received in the request
+            res.status(200).send('Profile picture uploaded successfully');
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Error uploading profile picture');
         }
-    }
-
-
-
+    };
     
-}
+    
 
-const createUser=(req,res)=>{
-    const {email,password}=req.body;
-    const enabled=true;
-    console.log(req.body)
-    const data=mysqlpool.query("insert into user(email,password,enabled)value(?,?,?)",[email,password,enabled])
-    if(data){
-        try{
-            console.log(data)
-            res.status(201).send({
-                message:"succeessfully created"
-            })
-        }catch(err){
-            crossOriginIsolated.log(err)
-            res.status(500).send({error:err})
-        }
+    const updateUserProfile=async (req,res)=>{
+
     }
 
-}
+    const uploadResume=async (req,res)=>{
+
+        
+    }
+
+    const getAllUsers=async (req,res)=>{
+        checkJwt(req.headers.authorization)
+        mysqlpool.query("select * from user");
+    }
 
 
-module.exports={getAllUser,createUser}
+module.exports={UploadPicture,updateUserProfile,uploadResume,getAllUsers};

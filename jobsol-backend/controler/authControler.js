@@ -4,82 +4,168 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const sendEmail = require("../utils/email");
 
-const signupUser = async (req, res) => {
-    const { name, email, password, confirmPassword, role, phone } = req.body;
-    const data = loadUserByUserName(email).then((data) => {
-        console.log(data[0]);
+
+const signupCandidate = async (req, res, next) => {
+
+    const { name, email, password, phone } = req.body;
+    try {
+        const data = await loadUserByUserName(email, "candidate")
         if (data[0].length > 0) {
             res.status(200).send({
                 email,
                 message: "user is already registerd try with other email "
             })
+
+        } else {
+            const saltRounds = 10;
+            const encryptedPassword = await bcrypt.hash(password, saltRounds)
+            console.log(encryptedPassword)
+            mysqlpool.query(`insert into candidate(name,email,password,phone,is_enabled) values (?,?,?,?,?)`, [name, email, encryptedPassword, phone, true]);
+
+            const jwt_token = genrateToken(email, true);
+
+            res.status(200).send({
+                token: jwt_token,
+                is_enabled: true
+            });
         }
 
 
-    })
-
-    const role_id = await mysqlpool.query(`select id from role where role_name=?`, [role]);
-    const { id } = role_id[0][0];
-    mysqlpool.query(`insert into user(name,email,password,phone,is_enabled) values (?,?,?,?,?)`, [name, email, password, phone, true]).then(() => {
-        console.log("creating user_role")
-        mysqlpool.query(`insert into user_role(user_id,role_id) values (?,?)`, [email, id]).then(() => {
-            console.log("genrate jwt")
-            const jwt_token = genrateToken(email, role, true);
-            res.status(200).json({
-                token: jwt_token,
-                role,
-                is_enabled: true
-            });
-        }).catch(() => {
-            res.status(500).json({
-                message: "internal jwt  server error"
-            })
-        })
-    }).catch(() => {
+    } catch (err) {
+        console.log(err)
         res.status(500).json({
             message: "internal server error"
         })
-    })
+    }
+
 
 
 }
 
 
-const loginUser = async (req, res) => {
-    const { email } = req.body;
-    const data = await loadUserByUserName(email);
-    if (data[0].length > 0) {
-        const { email, role, is_enabled, password } = data[0][0];
-        const role_id = await mysqlpool.query(`select role_id from user_role where user_id="${email}"`);
-        const role_result = await mysqlpool.query(`select role_name from role where id=${role_id[0][0].role_id}`);
-        const { role_name } = role_result[0][0]
-        if (password == req.body.password) {
-            const token = genrateToken(email, role, is_enabled);
-            res.status(200).send({
-                token,
-                role: role_name,
-                is_enabled
-            })
-        }
-        else {
-            res.status(500).send({
-                message: "username or password is wrong"
-            })
-        }
-    } else {
+const candidateLogin = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const data = await loadUserByUserName(email, "candidate");
+        if (data[0].length == 0) {
 
+            res.status(500).send({
+                message: "user is not registerd"
+            })
+        }
+       
+        const {  is_enabled, password } = data[0][0];
+        bcrypt.compare(password, req.body.password).then(function (err, result) {
+            if (result === false) {
+                res.status(500).send({
+                    message: "username or password is wrong"
+                })
+            } else {
+
+                const token = genrateToken(email, is_enabled);
+                res.status(200).send({
+                    token,
+                    is_enabled
+                })
+
+            }
+        });
+
+
+
+    } catch (err) {
+        console.log(err)
         res.status(500).send({
-            message: "email is not registerd"
+            message: "internal server error"
+        })
+
+    }
+
+
+}
+
+const employerSignup = async (req, res, next) => {
+
+    const { contact_person, email, password, phone,number_employee,designation,company_name } = req.body;
+    try {
+        const data = await loadUserByUserName(email, "employer")
+        if (data[0].length > 0) {
+            res.status(200).send({
+                email,
+                message: "employer is already registerd try with other email "
+            })
+
+        } else {
+            const saltRounds = 10;
+            const encryptedPassword = await bcrypt.hash(password, saltRounds)
+            console.log(encryptedPassword)
+            mysqlpool.query(`insert into employer(email,password,phone,contact_person,number_employee,designation,company_name,is_enabled) values (?,?,?,?,?,?,?,?)`,
+             [ email, encryptedPassword, phone, contact_person,number_employee,designation,company_name,true]);
+
+            const jwt_token = genrateToken(email, true);
+
+            res.status(200).send({
+                token: jwt_token,
+                is_enabled: true
+            });
+        }
+
+
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            message: "internal server error"
         })
     }
 
+
+
+}
+
+const employerLogin = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const data = await loadUserByUserName(email, "employer");
+        if (data[0].length == 0) {
+
+            res.status(500).send({
+                message: "user is not registerd"
+            })
+        }
+       
+        const {  is_enabled, password } = data[0][0];
+        bcrypt.compare(password, req.body.password).then(function (err, result) {
+            if (result === false) {
+                res.status(500).send({
+                    message: "username or password is wrong"
+                })
+            } else {
+
+                const token = genrateToken(email, is_enabled);
+                res.status(200).send({
+                    token,
+                    is_enabled
+                })
+
+            }
+        });
+
+
+
+    } catch (err) {
+        console.log(err)
+        res.status(500).send({
+            message: "internal server error"
+        })
+
+    }
 }
 
 
 const forgotPassword = async (req, res, next) => {
     const { email } = req.body;
     try {
-        const users = await loadUserByUserName(email)
+        const users = await loadUserByUserName(email, "candidate")
         if (users[0].length == 0) {
             res.status(200).json({
                 message: "user email is not registerd"
@@ -131,15 +217,15 @@ const resetPassword = async (req, res) => {
         }
         const expires_in = new Date(data[0][0].expires_in);
         const currentDateTime = new Date();
-        console.log("expires_in",expires_in);
+        console.log("expires_in", expires_in);
         console.log(new Date())
-        if(expires_in>currentDateTime){
+        if (expires_in > currentDateTime) {
 
             mysqlpool.query("update user set password =? where password_reset_token=?", [req.body.password, requestedHash])
             res.status(200).json({
                 message: "password set successfully"
             })
-        }else{
+        } else {
             res.status(500).json({
                 message: "time is expire"
             })
@@ -163,10 +249,10 @@ const createHash = (reset_token) => {
     return hashedString;
 }
 
-const genrateToken = (username, role, is_enabled) => {
+const genrateToken = (username, is_enabled) => {
     const expiresIn = process.env.EXP_TIME;
     const secret = process.env.SECRET;
-    const token = jwt.sign({ username, role, is_enabled }, secret, {
+    const token = jwt.sign({ username, is_enabled }, secret, {
         expiresIn
     });
     return token;
@@ -177,13 +263,12 @@ const verifyEmail = (req, res) => {
 
 }
 
-const loadUserByUserName = async (userName) => {
-    const user = await mysqlpool.query(`select name ,email,is_enabled,password from user where email='${userName}'`);
+const loadUserByUserName = async (userName, table_name) => {
+    const user = await mysqlpool.query(`select * from ${table_name} where email='${userName}'`);
     return user;
 }
 
 
 
 
-
-module.exports = { signupUser, loginUser, forgotPassword, resetPassword, verifyEmail }
+module.exports = { signupCandidate, candidateLogin, forgotPassword, resetPassword, verifyEmail,employerSignup,employerLogin,loadUserByUserName }

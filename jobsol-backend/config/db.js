@@ -1,4 +1,4 @@
-// const { Sequelize } = require('sequelize');
+const { Sequelize } = require('sequelize');
 const mysql = require('mysql2/promise');
 const dotenv=require('dotenv');
 dotenv.config();
@@ -16,9 +16,3 @@ console.log("in db")
 
 module.exports=mysqlpool;
 
-// const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PSWD, {
-//   host: process.env.DB_HOST,
-//   dialect: 'mysql'
-// });
-
-// module.exports=sequelize;

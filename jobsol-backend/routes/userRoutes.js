@@ -1,14 +1,13 @@
 const express=require("express");
-const { getAllUser, createUser } = require("../controler/userControler");
-
+const { UploadPicture, updateUserProfile, uploadResume, getAllUsers } = require("../controler/userControler");
+const upload=require("../config/multer");
 const router=express.Router();
 
-//get all user
+router.post('/upload', upload.single('profilePic'), UploadPicture);
+router.post('/user/profile',updateUserProfile);
+router.post('/user/resume',uploadResume);
+router.get("/",getAllUsers)
 
-router.get("/");
-
-
-router.post('/create',createUser);
 
 
 

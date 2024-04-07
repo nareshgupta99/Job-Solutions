@@ -1,5 +1,5 @@
 const express=require("express");
-const { signupUser, loginUser, forgotPassword, resetPassword, verifyEmail } = require("../controler/authControler");
+const {  forgotPassword, resetPassword, verifyEmail, signupCandidate, candidateLogin, employerSignup, employerLogin } = require("../controler/authControler");
 
 const router=express.Router();
 
@@ -27,7 +27,7 @@ const router=express.Router();
  *         description: Bad request, invalid data provided
  */
 
-router.post("/user/signup",signupUser);
+router.post("/user/signup",signupCandidate);
 /**
  * @swagger
  * /user/login:
@@ -39,11 +39,14 @@ router.post("/user/signup",signupUser);
  *       '500':
  *         description: user or password is wrong
  */
-router.post("/user/login",signupUser);
-router.post("/user/login",loginUser);
+router.post("/candidate/signup",signupCandidate);
+router.post("/candidate/login",candidateLogin);
 router.post("/user/forgot-password",forgotPassword);
 router.patch("/user/reset-password/:resetToken",resetPassword);
 // router.patch("/user/:verifyToken",verifyEmail);
+router.post("/employer/signup",employerSignup)
+router.post("/employer/login",employerLogin)
+
 
 
 module.exports=router;
