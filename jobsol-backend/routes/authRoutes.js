@@ -1,5 +1,5 @@
 const express=require("express");
-const {  forgotPassword, resetPassword, verifyEmail, signupCandidate, candidateLogin, employerSignup, employerLogin } = require("../controler/authControler");
+const {   resetPassword, verifyEmail, signupCandidate, candidateLogin, employerSignup, employerLogin, forgotPasswordCandidate } = require("../controler/authControler");
 
 const router=express.Router();
 
@@ -41,7 +41,7 @@ router.post("/user/signup",signupCandidate);
  */
 router.post("/candidate/signup",signupCandidate);
 router.post("/candidate/login",candidateLogin);
-router.post("/user/forgot-password",forgotPassword);
+router.post("/candidate/forgot-password",forgotPasswordCandidate);
 router.patch("/user/reset-password/:resetToken",resetPassword);
 // router.patch("/user/:verifyToken",verifyEmail);
 router.post("/employer/signup",employerSignup)

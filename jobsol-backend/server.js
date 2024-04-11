@@ -2,13 +2,12 @@ const express=require("express");
 const dotenv=require("dotenv");
 const morgan=require("morgan")
 const mysqlpool = require("./config/db");
-const cors=require("cors");
-const app=express();
 const swaggerDocs =require("./config/swagger");
 const swaggerUiExpress=require("swagger-ui-express");
-const {checkJwt} = require("./utils/checkAuth");
+const corsConfig = require("./utils/cors");
+const errorMiddleware=require("./middleware/ErrorMiddleware");
 
-
+const app=express();
 
 
 
@@ -25,37 +24,28 @@ app.use(morgan("dev"));
 //to receive json data from client 
 app.use(express.json());
 
-
-
-app.use("/api/auth",require("./routes/authRoutes"));
-app.use("/api-docs",swaggerUiExpress.serve,swaggerUiExpress.setup(swaggerDocs));
-app.use("/api",checkJwt,require('./routes/jobRoutes'));
-
-
+app.use(corsConfig);
 
 //to recive data in request
 app.use(express.urlencoded({extended:true}))
 
-//cors configuration
-app.use(cors({
-    origin:process.env.CORS_ORIGIN
-}))
 
-app.get("/",(req,res)=>{
-    res.send({message:"hello"})
-})
+app.use("/api/auth",require("./routes/authRoutes"));
+app.use("/api-docs",swaggerUiExpress.serve,swaggerUiExpress.setup(swaggerDocs));
+app.use("/api",require('./routes/jobRoutes'));
 
 
 
-// app.use(Candidate);
-// // app.use(pply)
-// app.use(Cerification);
-// app.use(Education);
-// app.use(Job)
-// app.use(Employer)
-// app.use(Skill)
-// app.use(WorkExperince)
-// app.use(Token)
+
+
+
+
+
+
+
+
+app.use(errorMiddleware)
+
 
 
 mysqlpool.query("select 1").then(()=>{

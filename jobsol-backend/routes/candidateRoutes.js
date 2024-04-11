@@ -10,17 +10,11 @@ router.post("/candidate/resume",uploadResume);
 
 router.post("/candidate/profile-pics/",uploadProfilePic)
 
-router.post("/candidate/create-alert");
-
-router.get("/candidate/alert/:userId");
-
-router.patch("candidate/alert/:alertId")
+router.post("/candidate/apply");
 
 router.get("candidate/applies/:userId");
 
 router.get("/candidate/apply/:applyId");
-
-router.post("/candidate/apply");
 
 router.post("/candidate/project");
 

@@ -1,15 +1,16 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import SignupLogin from "../src/component/SignupLogin";
-import ForgotPassword from "../src//component/ForgotPassword";
-import ResetPage from "./component/ResetPage";
-import Navbar from "./component/Navbar";
+import SignupLogin from "./component/signup/SignupLogin";
+import Home from "./component/home/Home";
+
 
 function App() {
+
   return (
     <BrowserRouter>
-    <Navbar />
+    {/* <Navbar /> */}
       <Routes>
-        {/* <Route path="/signup" element={<SignupLogin />} /> */}
+        <Route path="/signup" element={<SignupLogin />} />
+        <Route path='/' element={<Home /> } />
         {/* <Route path="/forgot-password" element={<ForgotPassword />} /> */}
         {/* <Route path="/reset-password" element={<ResetPage />} /> */}
       </Routes>

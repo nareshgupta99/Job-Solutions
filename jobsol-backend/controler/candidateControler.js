@@ -34,4 +34,5 @@ const uploadProfilePic=async(req,res)=>{
 
 
 
+
 module.exports={updateCandidateProfile,uploadResume,getAllCandidateDetails,uploadProfilePic};

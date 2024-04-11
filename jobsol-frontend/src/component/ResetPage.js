@@ -1,4 +1,4 @@
-import "../component/rest.css";
+// import "../component/rest.css";
 const ResetPage = () => {
   return (
     <div>

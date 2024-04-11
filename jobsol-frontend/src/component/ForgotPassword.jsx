@@ -1,4 +1,4 @@
-import "../component/forgot.css";
+// import "../component/forgot.css";
 const ForgotPassword = () => {
   return (
     <div>
