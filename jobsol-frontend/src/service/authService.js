@@ -1,31 +1,50 @@
-import axios from 'axios';
+import { PublicAxios } from './axiosConfig';
 
 
 const candidateSignup = async (candidate) => {
     console.log("candidate signup")
-    const data = await axios.post("http://localhost:4000/api/auth/candidate/signup", candidate, {
+    const data = await PublicAxios.post("auth/candidate/signup", candidate, {
         headers: {
             "Content-Type": "application/json",
-        },
-        withCredentials: true
+        }
     })
     return data;
 
 }
 
 const candidateLogin = async (candidate) => {
-    const data = await axios.post("http://localhost:4000/api/auth/candidate/login", candidate, {
+    const data = await PublicAxios.post("auth/candidate/login", candidate, {
         headers: {
             "Content-Type": "application/json",
-        },
-        withCredentials: true
+        }
     })
-    return data
-
-
+    return data;
 
 }
 
+// function isUserLoggedIn() {
+//     const token=getToken();
+//     if(token) return true
+//     else false;
+// }
+const getToken=()=>{
+    return localStorage.getItem("token");
+}
+
+const forgotPassword=async (email)=>{
+    const data = await PublicAxios.post("auth/candidate/forgot-password",email)
+    return data;
+}
+
+const resetCandidatePassword=async(data,resetToken)=>{
+    const res=await PublicAxios.patch(`/auth/candidate/reset-password/${resetToken}`,data);
+    return res;
+}
+
+const employeerSignup=async (data)=>{
+   const res=await PublicAxios.post("/auth/employer/signup",data);
+   return res;
+}
 
 
-export { candidateSignup, candidateLogin }
+export { candidateSignup, candidateLogin ,getToken,forgotPassword,resetCandidatePassword,employeerSignup}

@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import './signup.css';
 import { candidateLogin, candidateSignup } from "../../service/authService";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import AuthContext from '../../context/AuthContext';
 
 
-const SignupLogin = () => {
+const SignupLogin = (props) => {
   const navigate = useNavigate();
+
+  const {setToken}=useContext(AuthContext);
 
   let [active, setActive] = useState(false);
   const activeFormHandler = (event) => {
@@ -27,26 +30,27 @@ const SignupLogin = () => {
 
   const signupHandle = (event) => {
     setSignupData({ ...signupData, [event.target.name]: event.target.value })
-    console.log(signupData)
+    
   }
 
   const loginHandler = (event) => {
     let name = event.target.name;
     let value = event.target.value;
-    if (name == "loginUsername") SetLoginData({ ...loginData, "email": value })
-    if (name == "loginPassword") SetLoginData({ ...loginData, "password": value })
-    console.log(loginData)
+    if (name === "loginUsername") SetLoginData({ ...loginData, "email": value })
+    if (name === "loginPassword") SetLoginData({ ...loginData, "password": value })
+   
   }
 
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      candidateSignup(signupData);
+      const {data}=await candidateSignup(signupData);
+      setToken(data.token);
       navigate("/")
 
     } catch (err) {
-      console.log(err.message)
+      console.log(err)
     }
 
 
@@ -55,13 +59,14 @@ const SignupLogin = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      console.log("hello")
-      const data = await candidateLogin(loginData);
-      // console.log(data.response);
+      const {data} = await candidateLogin(loginData);
+      console.log(data);
+      setToken(data.token);
+      navigate("/")
 
     } catch (err) {
-      const { message } = err
-      console.log(message);
+      const { response } = err
+      console.log(response);
     }
   }
 
@@ -73,21 +78,15 @@ const SignupLogin = () => {
         <div className="form-container sign-up">
           <form>
             <h1>Create Account</h1>
-            {/* <div class="social-icons">
-            <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
-            <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
-            <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
-            <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
-          </div> */}
             <span>or use your email for registeration</span>
             <input type="text" placeholder="Name" value={signupData.name} onChange={signupHandle} name="name" />
             <input type="email" placeholder="Email" value={signupData.email} onChange={signupHandle} name="email" />
             <input type="password" placeholder="Password" value={signupData.password} onChange={signupHandle} name='password' />
             <input type="password" placeholder="Confirm Password" value={signupData.confirmPassword} onChange={signupHandle} name='confirmPassword' />
             <div style={{ display: "flex", alignItems: "center", justifyItems: 'center' }}>
-              Male:
+              <span style={{color:'black'}}>Male:</span>
               <input type='radio' name='gender' value={"male"} onChange={signupHandle} />
-              Female:
+              <span style={{color:'black',marginLeft:"10px"}}>Female:</span>
               <input type='radio' name='gender' value={"female"} onChange={signupHandle} />
             </div>
 
@@ -97,16 +96,10 @@ const SignupLogin = () => {
         <div className="form-container sign-in">
           <form>
             <h1>Sign In</h1>
-            <div className="social-icons">
-              <a href="#" className="icon"><i className="fa-brands fa-google-plus-g"></i></a>
-              <a href="#" className="icon"><i className="fa-brands fa-facebook-f"></i></a>
-              <a href="#" className="icon"><i className="fa-brands fa-github"></i></a>
-              <a href="#" className="icon"><i className="fa-brands fa-linkedin-in"></i></a>
-            </div>Name
             <span>or use your email password</span>
             <input type="email" placeholder="Email" name='loginUsername' value={loginData.email} onChange={loginHandler} />
             <input type="password" placeholder="Password" name='loginPassword' value={loginData.signup} onChange={loginHandler} />
-            <a href="#">Forget Your Password?</a>
+            <Link to="/candidate/forgot">Forget Your Password?</Link>
             <button onClick={handleLogin}>Sign In</button>
           </form>
         </div>
