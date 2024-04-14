@@ -9,7 +9,8 @@ const mysqlpool = mysql.createPool({
   user: process.env.DB_USER,
   password:process.env.DB_PSWD,
   database:process.env.DB_NAME,
-  waitForConnections: true
+  waitForConnections: true,
+  timezone: '+00:00',
 });
 
 console.log("in db")
