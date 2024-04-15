@@ -1,6 +1,9 @@
 const mysqlpool = require("../config/db")
+const ApiError=require("../utils/ApiError");
 
 const updateCandidateProfile=async (req,res,next)=>{
+    const decodedToken = getCredentialFromToken();
+    const [[candidate]] = await loadUserByUserName(decodedToken.username, "candidate");
     const {profile_summary,dob,expected_salery,carrer_break,gender}=req.body;
     try{
         
@@ -11,14 +14,10 @@ const updateCandidateProfile=async (req,res,next)=>{
                 message:"profile updated succeessfully"
             })
         }else{
-            res.status(500).send({
-                message:"something wrong while updating candidate"
-            }) 
+            next(new ApiError("something wrong while updating candidate",500))
         }
     }catch(err){
-        res.status(500).send({
-            message:"something wrong while updating candidate"
-        })
+        next(new ApiError("something wrong while updating candidate",500))
     }
 
 
@@ -32,7 +31,13 @@ const uploadProfilePic=async(req,res)=>{
 
 }
 
+const getCandidate=async (req,res)=>{
+    const token=req.body.token;
+    const decodedToken = getCredentialFromToken();
+    const [[candidate]] = await loadUserByUserName(decodedToken.username, "candidate");
+
+}
 
 
 
-module.exports={updateCandidateProfile,uploadResume,getAllCandidateDetails,uploadProfilePic};
+module.exports={updateCandidateProfile,uploadResume,uploadProfilePic};

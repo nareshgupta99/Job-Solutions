@@ -15,6 +15,7 @@ function App() {
   return (
     <BrowserRouter>
     <Navbar />
+
       <Routes>
         <Route path="/candidate/signup" element={<SignupLogin />} value={"false"}/>
         <Route path="/candidate/login" element={<SignupLogin />} value={true}/>
