@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../reset/reset.css";
+// import "../reset/reset.css";
 import { useParams } from "react-router";
 import { resetCandidatePassword } from "../../service/authService";
 

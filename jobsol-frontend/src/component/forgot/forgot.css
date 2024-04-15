@@ -3,7 +3,7 @@ body {
   background-size: cover;
   color: white;
   font-family: Sans-Serif;
-}
+ } 
 .wrapper {
   position: absolute;
   top: 50%;
@@ -39,7 +39,7 @@ body {
   padding: 4px;
 }
 .wrapper button {
-  width: 290px;
+  width: 254px;
   height: 35px;
   border: none;
   border-radius: 0.3rem;

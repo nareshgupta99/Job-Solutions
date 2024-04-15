@@ -1,7 +1,13 @@
 import React, { useState } from 'react'
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function Navbar() {
+    const [isOpen,setIsOpen]=useState(false)
+
+    const menueToggler=(e)=>{
+        e.preventDefault();
+        setIsOpen(!isOpen);
+    }
     const searchBox = {
         border: "none",
         outline: "none",
@@ -10,59 +16,90 @@ function Navbar() {
     const [search, setSearch] = useState([]);
     const [role, setRole] = useState("ROLE_SEEKER");
 
-    const [data,setData]=useState({
-        jobrole:"",
-        location:"",
-        company:""
+    const [data, setData] = useState({
+        jobrole: "",
+        location: "",
+        company: ""
 
     })
 
-    const changeHandler=(e)=>{
+    const changeHandler = (e) => {
         e.preventDefault();
-        setData({...data,[e.target.name]:e.target.value})
+        setData({ ...data, [e.target.name]: e.target.value })
         console.log(data)
     }
 
-    
 
     return (
-        <div style={{ background: "white", width: "100%", height: "80px", boxShadow: "0 0 whitesmoke", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ display: 'flex', height: "100%", alignItems: "center" }} className='logo'>
-
-                <p style={{ margin: "60px" }}> <Link to="/home" style={{textDecoration:"none"}} > JobSolution </Link></p>
-            </div>
-            <div name="searchContainer" style={{}}>
-
-                <div style={{ border: "1px solid black", padding: "12px", borderRadius: "10px" }}>
-                    <input type="input" placeholder='JoB Role' name='jobrole' style={searchBox} value={data.jobrole} onChange={changeHandler} />/
-                    <input type="input" placeholder='location ' name="location" style={searchBox} value={data.location} onChange={changeHandler} />/
-                    <input type="input" placeholder='company' style={searchBox} value={data.company} onChange={changeHandler} />
-                </div>
-
-                <div style={{ border: "0px solid black", borderRadius: "6px", padding: "4px", borderTop: "none" }}>
-                    {search.map((data) => (
-
-                        <div>
-                            {data}
-                            <div style={{ borderBottom: "1px solid grey", padding: "2px 0px" }}></div>
+        <header>
+            {/* <!-- Header Start --> */}
+            <div className="header-area header-transparrent">
+                <div className="headder-top header-sticky">
+                    <div className="container">
+                        <div className="row align-items-center">
+                            <div className="col-lg-3 col-md-2">
+                                {/* <!-- Logo --> */}
+                                <div className="logo">
+                                    <Link to="index.html"><img src="assets/img/logo/logo.png" alt="" /></Link>
+                                </div>
+                            </div>
+                            <div className="col-lg-9 col-md-9">
+                                <div className="menu-wrapper">
+                                    {/* <!-- Main-menu --> */}
+                                    <div className="main-menu">
+                                        <nav className="d-none d-lg-block">
+                                            <ul id="navigation">
+                                                <li><Link to="index.html">Home</Link></li>
+                                                <li><Link to="job_listing.html">Find Link Jobs </Link></li>
+                                                <li><Link to="about.html">About</Link></li>
+                                                <li><Link to="#">Page</Link>
+                                                    <ul className="submenu">
+                                                        <li><Link to="blog.html">Blog</Link></li>
+                                                        <li><Link to="single-blog.html">Blog Details</Link></li>
+                                                        <li><Link to="elements.html">Elements</Link></li>
+                                                        <li><Link to="job_details.html">job Details</Link></li>
+                                                    </ul>
+                                                </li>
+                                                <li><Link to="contact.html">Contact</Link></li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                    {/* <!-- Header-btn --> */}
+                                    <div className="header-btn d-none f-right d-lg-block">
+                                        <Link to="#" className="btn head-btn1">Register</Link>
+                                        <Link to="#" className="btn head-btn2">Login</Link>
+                                    </div>
+                                </div>
+                            </div>
+                            {/* <!-- Mobile Menu --> */}
+                            <div className="col-12">
+                                <div className="mobile_menu d-block d-lg-none">
+                                    <div className='slicknav_menu'>
+                                        <Link to="#" aria-haspopup="true" role="button" tabindex="0" className="slicknav_btn slicknav_collapsed" onClick={menueToggler}><span className="slicknav_menutxt">MENU</span><span className="slicknav_icon">
+                                            <span className="slicknav_icon-bar"></span><span className="slicknav_icon-bar"></span><span className="slicknav_icon-bar"></span></span></Link>
+                                        <ul className="slicknav_nav slicknav_hidden" aria-hidden="true" role="menu" style={isOpen===false?{display: "none"}:{display:"block"}}>
+                                            <li><Link to="index.html" role="menuitem" tabindex="-1">Home</Link></li>
+                                            <li><Link to="job_listing.html" role="menuitem" tabindex="-1">Find Link Jobs </Link></li>
+                                            <li><Link to="about.html" role="menuitem" tabindex="-1">About</Link></li>
+                                            <li className="slicknav_collapsed slicknav_parent"><Link to="#" role="menuitem" aria-haspopup="true" tabindex="-1" className="slicknav_item slicknav_row" style={{outline: "none"}}><Link to="#" tabindex="-1">Page</Link>
+                                                <span className="slicknav_arrow">+</span></Link><ul className="submenu slicknav_hidden" role="menu" aria-hidden="true" style={{display:" none"}}>
+                                                    <li><Link to="blog.html" role="menuitem" tabindex="-1">Blog</Link></li>
+                                                    <li><Link to="single-blog.html" role="menuitem" tabindex="-1">Blog Details</Link></li>
+                                                    <li><Link to="elements.html" role="menuitem" tabindex="-1">Elements</Link></li>
+                                                    <li><Link to="job_details.html" role="menuitem" tabindex="-1">job Details</Link></li>
+                                                </ul>
+                                            </li>
+                                            <li><Link to="contact.html" role="menuitem" tabindex="-1">Contact</Link></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    ))}
+                    </div>
                 </div>
-
-            </div>
-            <div style={{ display: "flex" }} name="login-signup-container">
-                <p style={{ padding: "10px",textAlign: "center",borderRadius: "5px",color: "green"  }}><Link to={(role==="ROLE_SEEKER"?"/candidate/signup":"/")} style={{textDecoration:"none"}}>Login/signup </Link></p>
-                <div>
-                    <select name="role-select" id="" style={{ padding: "10px", marginRight: "10px", outline: "none", border: "none" }} onChange={(e)=>{setRole(e.target.value)}}>
-                        <option value="ROLE_SEEKER">Seeker</option>
-                        <option value="ROLE_EMPLOYEER">Employeer</option>
-
-                    </select>
-                </div>
-
             </div>
 
-        </div>
+        </header>
     )
 }
 
