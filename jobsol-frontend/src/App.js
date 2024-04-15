@@ -9,6 +9,8 @@ import ResetPage from "./component/reset/ResetPage";
 import Register from "./component/employeer/Register";
 import Jobs from "./component/jobs/Jobs";
 import JobsDetails from "./component/jobs/JobDetails";
+import RegisterCandidate from "./component/signup/RegisterCandidate";
+import LoginCandidate from "./component/login/LoginCandidate";
 
 
 function App() {
@@ -17,10 +19,9 @@ function App() {
   return (
     <BrowserRouter>
     <Navbar />
-
       <Routes>
-        <Route path="/candidate/signup" element={<SignupLogin />} value={"false"}/>
-        <Route path="/candidate/login" element={<SignupLogin />} value={true}/>
+        <Route path="/candidate/signup" element={<RegisterCandidate />} value={"false"}/>
+        <Route path="/candidate/login" element={<LoginCandidate />} value={true}/>
         <Route path='/' element={<Home /> } />
         <Route path='/home' element={<Home /> } />
         <Route path='/logout' element={ setToken("")}/>
@@ -28,7 +29,7 @@ function App() {
         <Route path="/candidate/reset/:resetToken" element={<ResetPage />} />
         <Route path="/employer/signup" element={<Register />} />
         <Route path="/jobs" element={<Jobs />} />
-        <Route path="/jobs/:jobId" element={<JobsDetails />} />
+        <Route path="/job/:jobId" element={<JobsDetails />} />
         
 
         <Route path='*' element={<h1>404 error</h1> } />

@@ -35,10 +35,11 @@ const {checkJwt} = require("../utils/checkAuth");
         
     }
 
-    const getAllUsers=async (req,res)=>{
-        checkJwt(req.headers.authorization)
-        mysqlpool.query("select * from user");
+    const getLoggedUser=async (req,res)=>{
+        const decodedToken = getCredentialFromToken();
+        const [[employer]] = await loadUserByUserName(decodedToken.username, "employer");
+        
     }
 
 
-module.exports={UploadPicture,updateUserProfile,uploadResume,getAllUsers};
+module.exports={UploadPicture,updateUserProfile,uploadResume,getLoggedUser};

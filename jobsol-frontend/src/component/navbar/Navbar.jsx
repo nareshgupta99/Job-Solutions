@@ -69,8 +69,8 @@ function Navbar() {
                                     </div>
                                     {/* <!-- Header-btn --> */}
                                     <div className="header-btn d-none f-right d-lg-block">
-                                        <Link to="#" className="btn head-btn1">Register</Link>
-                                        <Link to="#" className="btn head-btn2">Login</Link>
+                                        <Link to="/candidate/signup" className="btn head-btn1">Register</Link>
+                                        <Link to="/candidate/login" className="btn head-btn2 ">Login</Link>
                                     </div>
                                 </div>
                             </div>

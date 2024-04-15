@@ -47,4 +47,5 @@ const employeerSignup=async (data)=>{
 }
 
 
+
 export { candidateSignup, candidateLogin ,getToken,forgotPassword,resetCandidatePassword,employeerSignup}
