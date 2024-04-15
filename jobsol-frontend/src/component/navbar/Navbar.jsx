@@ -40,7 +40,10 @@ function Navbar() {
                             <div className="col-lg-3 col-md-2">
                                 {/* <!-- Logo --> */}
                                 <div className="logo">
-                                    <Link to="index.html"><img src="assets/img/logo/logo.png" alt="" /></Link>
+                                    <Link to="/home">
+                                        <img src="assets/img/logo/logo.png" alt="" />
+                                        
+                                        </Link>
                                 </div>
                             </div>
                             <div className="col-lg-9 col-md-9">
@@ -50,7 +53,7 @@ function Navbar() {
                                         <nav className="d-none d-lg-block">
                                             <ul id="navigation">
                                                 <li><Link to="/home">Home</Link></li>
-                                                <li><Link to="job_listing.html">Find Link Jobs </Link></li>
+                                                <li><Link to="/jobs"> Jobs </Link></li>
                                                 <li><Link to="about.html">About</Link></li>
                                                 <li><Link to="#">Page</Link>
                                                     <ul className="submenu">

@@ -8,6 +8,7 @@ import ForgotPassword from "./component/forgot/ForgotPassword";
 import ResetPage from "./component/reset/ResetPage";
 import Register from "./component/employeer/Register";
 import Jobs from "./component/jobs/Jobs";
+import JobsDetails from "./component/jobs/JobDetails";
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/candidate/reset/:resetToken" element={<ResetPage />} />
         <Route path="/employer/signup" element={<Register />} />
         <Route path="/jobs" element={<Jobs />} />
+        <Route path="/jobs/:jobId" element={<JobsDetails />} />
         
 
         <Route path='*' element={<h1>404 error</h1> } />
