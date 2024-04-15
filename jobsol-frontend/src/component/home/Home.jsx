@@ -4,6 +4,7 @@ import Fotter from '../footer/Fotter'
 import Slider from '../slider/Slider'
 import Preloader from '../preloader/Preloader'
 import useDelayedRender from '../../hooks/useDelayedRender'
+import ApplyProcess from '../process/ApplyProcess'
 
 function Home() { 
  const showComponent=useDelayedRender(1000);
@@ -13,6 +14,7 @@ function Home() {
     <div>
       <Slider />
       <Category />
+      <ApplyProcess />
       <Fotter/>
     </div>
   ) : (
