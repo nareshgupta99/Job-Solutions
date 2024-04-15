@@ -1,8 +1,15 @@
 import React from 'react'
+import Category from '../category/Category'
+import Fotter from '../footer/Fotter'
+import Slider from '../slider/Slider'
 
 function Home() {
   return (
-    <div>Home</div>
+    <div>
+      <Slider />
+      <Category />
+      <Fotter />
+    </div>
   )
 }
 

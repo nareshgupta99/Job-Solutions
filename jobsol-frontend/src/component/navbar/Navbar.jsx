@@ -49,7 +49,7 @@ function Navbar() {
                                     <div className="main-menu">
                                         <nav className="d-none d-lg-block">
                                             <ul id="navigation">
-                                                <li><Link to="index.html">Home</Link></li>
+                                                <li><Link to="/home">Home</Link></li>
                                                 <li><Link to="job_listing.html">Find Link Jobs </Link></li>
                                                 <li><Link to="about.html">About</Link></li>
                                                 <li><Link to="#">Page</Link>
