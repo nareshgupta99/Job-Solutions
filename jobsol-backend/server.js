@@ -58,7 +58,7 @@ SeekerProfile.belongsTo(User);
 
 
 
-sequelize.sync({ force:true }).then(() => {
+sequelize.sync({ alter:true }).then(() => {
     addRole();
     console.log("All models were synchronized successfully.")
 }).catch((error) => {

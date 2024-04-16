@@ -22,7 +22,7 @@ const User = sequelize.define('user', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    token: {
+    passwordResetToken: {
         type: DataTypes.STRING,
         unique: true
     },expiresIn:{

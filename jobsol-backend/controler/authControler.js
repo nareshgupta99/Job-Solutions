@@ -1,4 +1,3 @@
-const mysqlpool = require("../config/db");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -8,13 +7,14 @@ const asyncErrorHandler = require("../utils/asyncErrorHandler");
 const dotenv = require("dotenv");
 const User = require("../models/User");
 const { Role } = require("../models/Role");
+const e = require("express");
 dotenv.config();
 
 const userRegistration = asyncErrorHandler(async (req, res, next) => {
     let user = req.body
     const { roleName } = req.body;
     console.log(roleName)
-    const data = await loadUserByUserName(user.email, "");
+    const data = await loadUserByUserName(user.email);
     console.log(data)
     if (data && isRoleValid(data.roles, roleName)) {
         next(new ApiError("user is already registerd", 200));
@@ -53,7 +53,7 @@ const userRegistration = asyncErrorHandler(async (req, res, next) => {
 const userLogin = asyncErrorHandler(async (req, res, next) => {
     console.log("logon bhjfhv")
     const { email, password } = req.body;
-    const user = await loadUserByUserName(email, "");
+    const user = await loadUserByUserName(email);
     console.log("user", user)
     if (!user) {
         next(new ApiError("email is not registerd", 401));
@@ -82,51 +82,54 @@ const userLogin = asyncErrorHandler(async (req, res, next) => {
 const forgotPassword = asyncErrorHandler(async (req, res, next) => {
 
     const { email } = req.body;
-    const [[users]] = await loadUserByUserName(email, "candidate")
-    if (!users) {
+    const user = await loadUserByUserName(email)
+    if (!user) {
         next(new ApiError("email is not registerd", 401));
     }
-    //genrate a password reset token
-    const reset_token = crypto.randomBytes(32)
-        .toString('hex');
-    const expires_in = new Date(Date.now() + (10 * 60 * 1000)).toISOString().slice(0, 19).replace('T', ' ');
+    else {
 
-    console.log(expires_in)
-    //genrate a hashed string
-    const hashedToken = createHash(reset_token);
-    //saved into database
-    mysqlpool.query("update candidate set password_reset_token=?,expires_in=? where email=?", [hashedToken, expires_in, email]);
-    const subject = "password change request"
-    // const url = `${req.protocol}://${req.get('host')}/api/auth/candidate/reset-password/${reset_token}`;
-    const url = `${process.env.ORIGIN}/candidate/reset/${reset_token}`;
-    const message = `To reset this password click here \n\n ${url}`
 
-    await sendEmail({ email, subject, message });
+        //genrate a password reset token
+        const reset_token = crypto.randomBytes(32)
+            .toString('hex');
+        const expires_in = new Date(Date.now() + (10 * 60 * 1000)).toISOString().slice(0, 19).replace('T', ' ');
 
-    res.status(200).send({
-        message: "email sent successfully check your inbox"
-    })
+        console.log(expires_in)
+        //genrate a hashed string
+        const hashedToken = createHash(reset_token);
+        user.passwordResetToken = hashedToken;
+        user.expiresIn = expires_in;
+        await user.save()
+        //saved into database
+        const subject = "password change request"
+        // const url = `${req.protocol}://${req.get('host')}/api/auth/candidate/reset-password/${reset_token}`;
+        const url = `${process.env.ORIGIN}/candidate/reset/${reset_token}`;
+        const message = `To reset this password click here \n\n ${url}`
+
+        await sendEmail({ email, subject, message });
+
+        res.status(200).send({
+            message: "email sent successfully check your inbox"
+        })
+    }
 })
 
 const resetPassword = async (req, res, next) => {
-    console.log("i am in reset Password")
     const { resetToken } = req.params;
     const requestedHash = createHash(resetToken);
-    console.log(requestedHash)
+    let user ;
     try {
-        const [[data]] = await mysqlpool.query("select * from candidate where password_reset_token=?", [requestedHash]);
-        if (!data) {
+        user = await User.findOne({ where: { passwordResetToken: requestedHash } })
+        if (!user) {
             next(new ApiError("something went wrong try again"));
         }
-        console.log(data)
-        const expires_in = new Date(data.expires_in);
-        const currentDateTime = new Date();
-        console.log("expires_in", expires_in);
-
-        console.log(new Date())
-        if (expires_in > currentDateTime) {
-
-            mysqlpool.query("update candidate set password =? where password_reset_token=?", [req.body.password, requestedHash])
+      
+        const expires_in = new Date(user.expiresIn);
+        const currentDateTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        if (expires_in > new Date(currentDateTime)) {
+            user.password = req.body.password;
+            user.passwordResetToken="";
+            await user.save();
             res.status(200).json({
                 message: "password set successfully"
             })
@@ -167,7 +170,7 @@ const verifyEmail = (req, res) => {
 
 }
 
-const loadUserByUserName = async (userName, table_name) => {
+const loadUserByUserName = async (userName) => {
     // const user = await mysqlpool.query(`select * from ${table_name} where email=?`, [userName]);
     // return user;
     return await User.findOne({
@@ -180,7 +183,6 @@ const loadUserByUserName = async (userName, table_name) => {
 
 const isRoleValid = (roles, role) => {
     const res = roles.find((r) => r.roleName === role);
-    console.log("res", res)
     return res;
 
 }
