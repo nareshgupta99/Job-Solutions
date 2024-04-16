@@ -7,24 +7,39 @@ const ApiError = require("../utils/ApiError");
 const asyncErrorHandler = require("../utils/asyncErrorHandler");
 const dotenv = require("dotenv");
 const User = require("../models/User");
-const {Role} = require("../models/Role");
+const { Role } = require("../models/Role");
 dotenv.config();
 
-const signupCandidate = asyncErrorHandler(async (req, res, next) => {
+const userRegistration = asyncErrorHandler(async (req, res, next) => {
     let user = req.body
-    console.log(user.email);
     const { roleName } = req.body;
+    console.log(roleName)
     const data = await loadUserByUserName(user.email, "");
-    if (data) {
+    console.log(data)
+    if (data && isRoleValid(data.roles, roleName)) {
         next(new ApiError("user is already registerd", 200));
     } else {
         const saltRounds = 10;
         const encryptedPassword = await bcrypt.hash(user.password, saltRounds);
         user = { ...user, password: encryptedPassword }
         const role = await Role.findAll({ where: { roleName: roleName } })
-        const savedUser = await User.create(user)
-        await savedUser.addRoles(role)// This will insert a new row in the userRole join table
-        const jwt_token = genrateToken({email:user.email,userId:savedUser.UserId,is_enabled:true});
+
+
+        let jwt_token = "";
+        if (data) {
+            data.password = encryptedPassword;
+            await data.addRoles(role);
+            await data.save();
+            jwt_token = genrateToken({ email: user.email, userId: data.UserId, is_enabled: true });
+        }
+        else {
+            const savedUser = await User.create(user)
+            await savedUser.addRoles(role)// This will insert a new row in the userRole join table
+            jwt_token = genrateToken({ email: user.email, userId: savedUser.UserId, is_enabled: true });
+
+        }
+
+
         res.status(200).send({
             message: "user Registered successfully",
             token: jwt_token,
@@ -32,98 +47,29 @@ const signupCandidate = asyncErrorHandler(async (req, res, next) => {
         });
     }
 
-
-        // const { name, email, password, phone, gender } = req.body;
-    // console.log(password)
-    // const [[data]] = await loadUserByUserName(email, "candidate")
-    // if (data) {
-    //     next(new ApiError("user is already registerd", 200));
-    // } else {
-    //     const saltRounds = 10;
-    //     const encryptedPassword = await bcrypt.hash(password, saltRounds)
-    //     await mysqlpool.query(`insert into candidate(name,email,password,phone,is_enabled,gender) values (?,?,?,?,?,?)`, [name, email, encryptedPassword, phone, true, gender]);
-
-    //     const jwt_token = genrateToken(email, true);
-
-    //     res.status(200).send({
-    //         message: "user Registered successfully",
-    //         token: jwt_token,
-    //         is_enabled: true
-    //     });
-    // }
-
-
 })
 
 
-const candidateLogin = asyncErrorHandler(async (req, res, next) => {
-    const { email } = req.body;
-    console.log(email)
-    const [[data]] = await loadUserByUserName(email, "candidate");
-    console.log("data", data)
-    if (!data) {
+const userLogin = asyncErrorHandler(async (req, res, next) => {
+    console.log("logon bhjfhv")
+    const { email, password } = req.body;
+    const user = await loadUserByUserName(email, "");
+    console.log("user", user)
+    if (!user) {
         next(new ApiError("email is not registerd", 401));
+        console.log("else")
     } else {
-        const { is_enabled, password } = data;
-        const result = await bcrypt.compare(req.body.password, password);
+        console.log("else")
+        const result = await bcrypt.compare(password, user.password);
         if (!result) {
-            next(new ApiError("username or password is wrong", 401));
-        }
-        else {
-            const token = genrateToken(email, is_enabled);
-            console.log("token", token)
-            res.status(200).send({
-                message: "user login succesfully",
-                token,
-                is_enabled
-            })
-        }
-    }
-
-})
-
-
-const employerSignup = asyncErrorHandler(async (req, res, next) => {
-
-    const { contactPerson, email, password, phone, numberEmployee, designation, companyName } = req.body;
-    console.log(req.body)
-    const [[data]] = await loadUserByUserName(email, "employer")
-    if (data) {
-        next(new ApiError(`${email} is already registerd try with other email`, 200));
-    } else {
-        const saltRounds = 10;
-        const encryptedPassword = await bcrypt.hash(password, saltRounds)
-        mysqlpool.query(`insert into employer(email,password,phone,contact_person,number_employee,designation,company_name,is_enabled) values (?,?,?,?,?,?,?,?)`,
-            [email, encryptedPassword, phone, contactPerson, numberEmployee, designation, companyName, true]);
-
-        const jwt_token = genrateToken(email, true);
-
-        res.status(200).send({
-            token: jwt_token,
-            is_enabled: true
-        });
-    }
-
-})
-
-const employerLogin = asyncErrorHandler(async (req, res) => {
-
-    const { email } = req.body;
-    const [[data]] = await loadUserByUserName(email, "employer");
-    if (!data) {
-        next(new ApiError("email is not registerd", 401));
-    }
-    else {
-        const { is_enabled, password } = data[0][0];
-        const result = await bcrypt.compare(password, req.body.password);
-        if (result === false) {
             next(new ApiError("username or password is wrong", 401));
         } else {
 
-            const token = genrateToken(email, is_enabled);
-            res.status(200).json({
+            const token = genrateToken({ email: user.email, userId: user.UserId, is_enabled: true, roles: user.roles });
+            res.status(200).send({
+                message: "user login succesfully",
                 token,
-                is_enabled
+                is_enabled: true
             })
 
         }
@@ -132,7 +78,8 @@ const employerLogin = asyncErrorHandler(async (req, res) => {
 })
 
 
-const forgotPasswordCandidate = asyncErrorHandler(async (req, res, next) => {
+
+const forgotPassword = asyncErrorHandler(async (req, res, next) => {
 
     const { email } = req.body;
     const [[users]] = await loadUserByUserName(email, "candidate")
@@ -223,10 +170,20 @@ const verifyEmail = (req, res) => {
 const loadUserByUserName = async (userName, table_name) => {
     // const user = await mysqlpool.query(`select * from ${table_name} where email=?`, [userName]);
     // return user;
-    return await User.findOne({ where: { email: userName } })
+    return await User.findOne({
+        where: { email: userName }, include: {
+            model: Role
+        }
+    })
+
+}
+
+const isRoleValid = (roles, role) => {
+    const res = roles.find((r) => r.roleName === role);
+    console.log("res", res)
+    return res;
 
 }
 
 
-
-module.exports = { signupCandidate, candidateLogin, forgotPasswordCandidate, resetPassword, verifyEmail, employerSignup, employerLogin, loadUserByUserName }
+module.exports = { userRegistration, userLogin, forgotPassword, resetPassword, verifyEmail, loadUserByUserName }

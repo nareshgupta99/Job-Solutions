@@ -29,7 +29,7 @@ const addRole=asyncErrorHandler(async()=> {
     })
     Role.findOrCreate({
         where: { roleId: 502 },
-        defaults: { roleName: "ROLE_EMPLOYEE" }
+        defaults: { roleName: "ROLE_EMPLOYEER" }
     })
     
 })
