@@ -1,5 +1,4 @@
 const sequelize=require("../config/db");
-const Employer = require("./Employer");
 const { DataTypes } = require('sequelize');
 
 const Job=sequelize.define("job",{
@@ -31,10 +30,16 @@ const Job=sequelize.define("job",{
         type:DataTypes.INTEGER,
         allowNull:false
     }
-})
+},{
+    timestamps: false,
+    freezeTableName: true,
+}
 
-// Employer.belongsToMany(Job);
-// Job.belongsTo(Employer);
+)
+
+
+
+
 
 
     

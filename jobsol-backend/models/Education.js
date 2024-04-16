@@ -31,8 +31,6 @@ const Education=sequelize.define("education",{
    }
 })
 
-// Candidate.belongsToMany(Education);
-// Education.belongsToMany(Candidate);
 
 
 

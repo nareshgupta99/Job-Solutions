@@ -1,7 +1,7 @@
 const sequelize=require("../config/db");
 const { DataTypes } = require('sequelize');
 
-const EmployerProfile=sequelize.define("employer",{
+const EmployerProfile=sequelize.define("employerProfile",{
     employeerId:{
         type: DataTypes.INTEGER,
         primaryKey: true,

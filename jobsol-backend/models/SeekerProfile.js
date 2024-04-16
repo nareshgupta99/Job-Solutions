@@ -1,7 +1,7 @@
 const sequelize=require("../config/db");
 const { DataTypes } = require('sequelize');
 
-const SeekerProfile=sequelize.define("sekker",{
+const SeekerProfile=sequelize.define("seekerProfile",{
     seekerId:{
         type: DataTypes.INTEGER,
         primaryKey: true,

@@ -1,7 +1,6 @@
 const express=require("express");
 const dotenv=require("dotenv");
 const morgan=require("morgan")
-const mysqlpool = require("./config/db");
 const swaggerDocs =require("./config/swagger");
 const swaggerUiExpress=require("swagger-ui-express");
 const cors=require("./utils/cors")
@@ -12,7 +11,9 @@ const {Role,addRole} = require("./models/Role");
 const EmployerProfile = require("./models/EmployerProfile");
 const SeekerProfile = require("./models/SeekerProfile");
 const UserRole = require("./models/UserRole");
-const asyncErrorHandler = require("./utils/asyncErrorHandler");
+const Job = require("./models/Job");
+const Application = require("./models/Application");
+const Category = require("./models/Application");
 
 const app=express();
 
@@ -49,16 +50,25 @@ app.use("/api-docs",swaggerUiExpress.serve,swaggerUiExpress.setup(swaggerDocs));
 
 User.belongsToMany(Role,{ through: UserRole });
 Role.belongsToMany(User,{ through: UserRole });
-User.hasOne(EmployerProfile);
-EmployerProfile.belongsTo(User);
-User.hasOne(SeekerProfile);
-SeekerProfile.belongsTo(User);
+Job.belongsTo(User, { foreignKey: 'EmployerID' });
+Application.belongsTo(User, { foreignKey: 'SeekerID' });
+Application.belongsTo(Job, { foreignKey: 'JobID' });
+SeekerProfile.belongsTo(User, { foreignKey: 'UserID', primaryKey: true });
+EmployerProfile.belongsTo(User, { foreignKey: 'UserID', primaryKey: true });
+Job.belongsTo(Category, { foreignKey: 'CategoryID' });
+
+
+// User.hasOne(EmployerProfile);
+// EmployerProfile.belongsTo(User);
+
+// User.hasOne(SeekerProfile);
+// SeekerProfile.belongsTo(User);
 
 
 
 
 
-sequelize.sync({ alter:true }).then(() => {
+sequelize.sync({ force:true }).then(() => {
     addRole();
     console.log("All models were synchronized successfully.")
 }).catch((error) => {
@@ -69,17 +79,6 @@ sequelize.sync({ alter:true }).then(() => {
 
 
 app.use(errorMiddleware)
-
-
-
-// mysqlpool.query("select 1").then(()=>{
-//     console.log("database connection success")
-//     app.listen(PORT,()=>{
-//         console.log(`server is running ${PORT}`)
-//     })
-// }).catch((error)=>{
-//     console.log(error)
-// })
 
 
 
