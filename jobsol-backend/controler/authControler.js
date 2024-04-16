@@ -5,29 +5,53 @@ const crypto = require("crypto");
 const sendEmail = require("../utils/email");
 const ApiError = require("../utils/ApiError");
 const asyncErrorHandler = require("../utils/asyncErrorHandler");
-const dotenv=require("dotenv");
+const dotenv = require("dotenv");
+const User = require("../models/User");
+const {Role} = require("../models/Role");
 dotenv.config();
 
 const signupCandidate = asyncErrorHandler(async (req, res, next) => {
-
-    const { name, email, password, phone, gender } = req.body;
-    console.log(password)
-    const [[data]] = await loadUserByUserName(email, "candidate")
+    let user = req.body
+    console.log(user.email);
+    const { roleName } = req.body;
+    const data = await loadUserByUserName(user.email, "");
     if (data) {
         next(new ApiError("user is already registerd", 200));
     } else {
         const saltRounds = 10;
-        const encryptedPassword = await bcrypt.hash(password, saltRounds)
-        await mysqlpool.query(`insert into candidate(name,email,password,phone,is_enabled,gender) values (?,?,?,?,?,?)`, [name, email, encryptedPassword, phone, true, gender]);
-
-        const jwt_token = genrateToken(email, true);
-
+        const encryptedPassword = await bcrypt.hash(user.password, saltRounds);
+        user = { ...user, password: encryptedPassword }
+        const role = await Role.findAll({ where: { roleName: roleName } })
+        const savedUser = await User.create(user)
+        await savedUser.addRoles(role)// This will insert a new row in the userRole join table
+        const jwt_token = genrateToken({email:user.email,userId:savedUser.UserId,is_enabled:true});
         res.status(200).send({
             message: "user Registered successfully",
             token: jwt_token,
             is_enabled: true
         });
     }
+
+
+        // const { name, email, password, phone, gender } = req.body;
+    // console.log(password)
+    // const [[data]] = await loadUserByUserName(email, "candidate")
+    // if (data) {
+    //     next(new ApiError("user is already registerd", 200));
+    // } else {
+    //     const saltRounds = 10;
+    //     const encryptedPassword = await bcrypt.hash(password, saltRounds)
+    //     await mysqlpool.query(`insert into candidate(name,email,password,phone,is_enabled,gender) values (?,?,?,?,?,?)`, [name, email, encryptedPassword, phone, true, gender]);
+
+    //     const jwt_token = genrateToken(email, true);
+
+    //     res.status(200).send({
+    //         message: "user Registered successfully",
+    //         token: jwt_token,
+    //         is_enabled: true
+    //     });
+    // }
+
 
 })
 
@@ -127,7 +151,7 @@ const forgotPasswordCandidate = asyncErrorHandler(async (req, res, next) => {
     mysqlpool.query("update candidate set password_reset_token=?,expires_in=? where email=?", [hashedToken, expires_in, email]);
     const subject = "password change request"
     // const url = `${req.protocol}://${req.get('host')}/api/auth/candidate/reset-password/${reset_token}`;
-    const url=`${process.env.ORIGIN}/candidate/reset/${reset_token}`;
+    const url = `${process.env.ORIGIN}/candidate/reset/${reset_token}`;
     const message = `To reset this password click here \n\n ${url}`
 
     await sendEmail({ email, subject, message });
@@ -137,7 +161,7 @@ const forgotPasswordCandidate = asyncErrorHandler(async (req, res, next) => {
     })
 })
 
-const resetPassword = async (req, res,next) => {
+const resetPassword = async (req, res, next) => {
     console.log("i am in reset Password")
     const { resetToken } = req.params;
     const requestedHash = createHash(resetToken);
@@ -151,7 +175,7 @@ const resetPassword = async (req, res,next) => {
         const expires_in = new Date(data.expires_in);
         const currentDateTime = new Date();
         console.log("expires_in", expires_in);
-        
+
         console.log(new Date())
         if (expires_in > currentDateTime) {
 
@@ -160,7 +184,7 @@ const resetPassword = async (req, res,next) => {
                 message: "password set successfully"
             })
         } else {
-            next(new ApiError("token is expire ",400));
+            next(new ApiError("token is expire ", 400));
         }
 
 
@@ -182,10 +206,10 @@ const createHash = (reset_token) => {
     return hashedString;
 }
 
-const genrateToken = (username, is_enabled) => {
+const genrateToken = (payload) => {
     const expiresIn = process.env.EXP_TIME;
     const secret = process.env.SECRET;
-    const token = jwt.sign({ username, is_enabled }, secret, {
+    const token = jwt.sign(payload, secret, {
         expiresIn
     });
     return token;
@@ -197,8 +221,10 @@ const verifyEmail = (req, res) => {
 }
 
 const loadUserByUserName = async (userName, table_name) => {
-    const user = await mysqlpool.query(`select * from ${table_name} where email=?`, [userName]);
-    return user;
+    // const user = await mysqlpool.query(`select * from ${table_name} where email=?`, [userName]);
+    // return user;
+    return await User.findOne({ where: { email: userName } })
+
 }
 
 
