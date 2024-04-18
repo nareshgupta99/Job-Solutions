@@ -13,7 +13,10 @@ const SeekerProfile = require("./models/SeekerProfile");
 const UserRole = require("./models/UserRole");
 const Job = require("./models/Job");
 const Application = require("./models/Application");
-const Category = require("./models/Application");
+const Category = require("./models/Category");
+const JobCategory=require("./models/JobCategory");
+
+
 
 const app=express();
 
@@ -42,9 +45,9 @@ app.use(express.urlencoded({extended:true}))
 
 
 app.use(cors)
-app.use("/api",require('./routes/jobRoutes'));
 app.use("/api/auth",require("./routes/authRoutes"));
 app.use("/api-docs",swaggerUiExpress.serve,swaggerUiExpress.setup(swaggerDocs));
+app.use("/api",require('./routes/jobRoutes'));
 
 
 
@@ -55,20 +58,12 @@ Application.belongsTo(User, { foreignKey: 'SeekerID' });
 Application.belongsTo(Job, { foreignKey: 'JobID' });
 SeekerProfile.belongsTo(User, { foreignKey: 'UserID', primaryKey: true });
 EmployerProfile.belongsTo(User, { foreignKey: 'UserID', primaryKey: true });
-Job.belongsTo(Category, { foreignKey: 'CategoryID' });
-
-
-// User.hasOne(EmployerProfile);
-// EmployerProfile.belongsTo(User);
-
-// User.hasOne(SeekerProfile);
-// SeekerProfile.belongsTo(User);
+Job.belongsTo(Category,{through: JobCategory})
+Category.belongsToMany(Job,{through:JobCategory})
 
 
 
-
-
-sequelize.sync({ force:true }).then(() => {
+sequelize.sync({force:true}).then(() => {
     addRole();
     console.log("All models were synchronized successfully.")
 }).catch((error) => {

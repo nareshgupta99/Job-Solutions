@@ -17,12 +17,5 @@ const Category = sequelize.define("category", {
 
 )
 
-module.exports=Category
+module.exports=Category;
 
-
-
-
-
-
-
-module.exports = Job;

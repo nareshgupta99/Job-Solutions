@@ -1,15 +1,16 @@
 import { PublicAxios } from './axiosConfig';
 
 
-const candidateSignup = async (candidate) => {
-    console.log("candidate signup")
-    const data = await PublicAxios.post("auth/candidate/signup", candidate, {
+
+
+const registerUser=async (user)=>{
+    const data = await PublicAxios.post("auth/user/signup", user, {
         headers: {
             "Content-Type": "application/json",
         }
     })
+    console.log(data)
     return data;
-
 }
 
 const candidateLogin = async (candidate) => {
@@ -22,11 +23,7 @@ const candidateLogin = async (candidate) => {
 
 }
 
-// function isUserLoggedIn() {
-//     const token=getToken();
-//     if(token) return true
-//     else false;
-// }
+
 const getToken=()=>{
     return localStorage.getItem("token");
 }
@@ -48,4 +45,4 @@ const employeerSignup=async (data)=>{
 
 
 
-export { candidateSignup, candidateLogin ,getToken,forgotPassword,resetCandidatePassword,employeerSignup}
+export {  candidateLogin ,getToken,forgotPassword,resetCandidatePassword,employeerSignup,registerUser}

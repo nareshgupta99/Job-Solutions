@@ -1,12 +1,17 @@
 const mysqlpool = require("../config/db");
-const { getCredentialFromToken } = require("../utils/checkAuth");
+const { getCredentialFromToken } = require("../utils/Auth");
+const asyncErrorHandler = require("../utils/asyncErrorHandler");
 const { loadUserByUserName } = require("./authControler");
 
 
-const createJob = async (req, res) => {
-    try {
-        const decodedToken = getCredentialFromToken();
-        const [[employer]] = await loadUserByUserName(decodedToken.username, "employer");
+const createJob =asyncErrorHandler( async (req, res) => {
+
+    console.log("in create job")
+
+        // get email from token
+        const decodedToken = await getCredentialFromToken();
+        const employer = await loadUserByUserName(decodedToken.email);
+
 
         const { experince_required, location, job_type, sallery_min, sallery_max, discription, skill } = req.body;
         const [result] = await mysqlpool.execute("insert into job(experince_required,location,job_type,sallery_min,sallery_max,discription) values (?,?,?,?,?,?)", [experince_required, location, job_type, sallery_min, sallery_max, discription]);
@@ -17,15 +22,15 @@ const createJob = async (req, res) => {
         res.status(201).send({
             message: "job posted successfull"
         })
-    } catch (err) {
-        console.log(err)
-        res.status(500).send({
-            message: "internal server error",
-            err
-        })
-    }
+    
+        // console.log(err)
+        // res.status(500).send({
+        //     message: "internal server error",
+        //     err
+        // })
+    
 
-}
+})
 
 const getAllJobs = async (req, res) => {
     try {

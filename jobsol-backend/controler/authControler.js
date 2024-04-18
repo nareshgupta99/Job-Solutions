@@ -8,6 +8,7 @@ const dotenv = require("dotenv");
 const User = require("../models/User");
 const { Role } = require("../models/Role");
 const e = require("express");
+const UserRole = require("../models/UserRole");
 dotenv.config();
 
 const userRegistration = asyncErrorHandler(async (req, res, next) => {
@@ -26,12 +27,14 @@ const userRegistration = asyncErrorHandler(async (req, res, next) => {
 
 
         let jwt_token = "";
+        // if user is present with different role
         if (data) {
             data.password = encryptedPassword;
             await data.addRoles(role);
             await data.save();
             jwt_token = genrateToken({ email: user.email, userId: data.UserId, is_enabled: true });
         }
+        // if user is not present
         else {
             const savedUser = await User.create(user)
             await savedUser.addRoles(role)// This will insert a new row in the userRole join table
@@ -171,8 +174,6 @@ const verifyEmail = (req, res) => {
 }
 
 const loadUserByUserName = async (userName) => {
-    // const user = await mysqlpool.query(`select * from ${table_name} where email=?`, [userName]);
-    // return user;
     return await User.findOne({
         where: { email: userName }, include: {
             model: Role

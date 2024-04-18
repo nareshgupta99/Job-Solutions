@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import SignupLogin from "./component/signup/SignupLogin";
 import Home from "./component/home/Home";
 import Navbar from "./component/navbar/Navbar";
 import { useContext } from "react";
@@ -20,11 +19,11 @@ function App() {
     <BrowserRouter>
     <Navbar />
       <Routes>
-        <Route path="/candidate/signup" element={<RegisterCandidate />} value={"false"}/>
+        <Route path="/candidate/signup" element={<RegisterCandidate role="ROLE_SEEKER"/>} />
         <Route path="/candidate/login" element={<LoginCandidate />} value={true}/>
         <Route path='/' element={<Home /> } />
         <Route path='/home' element={<Home /> } />
-        <Route path='/logout' element={ setToken("")}/>
+        <Route path='/user/logout' element={ setToken("")}/>
         <Route path='/candidate/forgot' element={<ForgotPassword />}/>
         <Route path="/candidate/reset/:resetToken" element={<ResetPage />} />
         <Route path="/employer/signup" element={<Register />} />
@@ -33,8 +32,6 @@ function App() {
         
 
         <Route path='*' element={<h1>404 error</h1> } />
-        {/* <Route path="/forgot-password" element={<ForgotPassword />} /> */}
-        {/* <Route path="/reset-password" element={<ResetPage />} /> */}
       </Routes>
     </BrowserRouter>
   );

@@ -3,7 +3,8 @@ import useDelayedRender from '../../hooks/useDelayedRender'
 import Preloader from '../preloader/Preloader'
 
 function LoginCandidate() {
-    const showComponent=useDelayedRender(1000);
+    const showComponent=useDelayedRender(100);
+
     
   return showComponent?(
     <div className="col-lg-4 border p-3 m-auto">

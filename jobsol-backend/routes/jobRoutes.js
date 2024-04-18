@@ -1,9 +1,10 @@
 const express=require("express");
 const { createJob, getAllJobs, getJobById, getJobsByEmployer, getJobsByLocation, deleteJobByJobId } = require("../controler/jobControler");
+const { isAuthenticated } = require("../utils/Auth");
 
 const router=express.Router();
 
-router.post("/job/create",createJob);
+router.post("/employeer/job/create",isAuthenticated,createJob);
 
 router.get("/jobs",getAllJobs);
 

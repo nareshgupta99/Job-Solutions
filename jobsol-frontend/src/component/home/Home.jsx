@@ -7,7 +7,7 @@ import useDelayedRender from '../../hooks/useDelayedRender'
 import ApplyProcess from '../process/ApplyProcess'
 
 function Home() { 
- const showComponent=useDelayedRender(1000);
+ const showComponent=useDelayedRender(100);
 
   
   return showComponent ? (
