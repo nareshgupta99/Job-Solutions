@@ -10,10 +10,10 @@ router.get("/jobs",getAllJobs);
 
 router.get("/job/:jobId",getJobById);
 
-router.get("/jobs/employer/",getJobsByEmployer);
+router.get("/jobs/employer/",getJobsByEmployer,isAuthenticated);
 
 router.get("/jobs/location/:location",getJobsByLocation);
 
-router.delete("/job/:jobId",deleteJobByJobId);
+router.delete("/job/:jobId",deleteJobByJobId,isAuthenticated);
 
 module.exports=router;

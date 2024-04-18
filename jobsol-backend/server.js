@@ -15,6 +15,7 @@ const Job = require("./models/Job");
 const Application = require("./models/Application");
 const Category = require("./models/Category");
 const JobCategory=require("./models/JobCategory");
+const { isAuthenticated } = require("./utils/Auth");
 
 
 
@@ -48,7 +49,7 @@ app.use(cors)
 app.use("/api/auth",require("./routes/authRoutes"));
 app.use("/api-docs",swaggerUiExpress.serve,swaggerUiExpress.setup(swaggerDocs));
 app.use("/api",require('./routes/jobRoutes'));
-
+app.use("/api",require("./routes/categoryRoute"));
 
 
 User.belongsToMany(Role,{ through: UserRole });
