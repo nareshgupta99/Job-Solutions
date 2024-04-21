@@ -1,13 +1,12 @@
 const express=require("express")
 const router=express.Router();
-const { isAuthenticated } = require("../utils/Auth");
+const { isAuthenticated, hasRole } = require("../utils/Auth");
+const { createCategory, getAllCategory } = require("../controler/categoryController");
 
 
-router.post("/category/create",isAuthenticated);
+router.post("/employeer/category/create",isAuthenticated,hasRole("ROLE_EMPLOYEER"),createCategory);
 
-router.get("/categories");
-
-router.get("/category/id");
+router.get("/categories",getAllCategory);
 
 router.delete("/category/id",isAuthenticated);
 

@@ -1,10 +1,10 @@
 const express=require("express");
 const { createJob, getAllJobs, getJobById, getJobsByEmployer, getJobsByLocation, deleteJobByJobId } = require("../controler/jobControler");
-const { isAuthenticated } = require("../utils/Auth");
+const { isAuthenticated, hasRole } = require("../utils/Auth");
 
 const router=express.Router();
 
-router.post("/employeer/job/create",isAuthenticated,createJob);
+router.post("/employeer/job/create",isAuthenticated,hasRole("ROLE_EMPLOYEER"),createJob);
 
 router.get("/jobs",getAllJobs);
 

@@ -4,32 +4,21 @@ const asyncErrorHandler = require("../utils/asyncErrorHandler");
 const { loadUserByUserName } = require("./authControler");
 
 
-const createJob =asyncErrorHandler( async (req, res) => {
+const createJob = asyncErrorHandler(async (req, res) => {
 
     console.log("in create job")
-
-        // get email from token
-        const decodedToken = await getCredentialFromToken();
-        const employer = await loadUserByUserName(decodedToken.email);
-
-
-        const { experince_required, location, job_type, sallery_min, sallery_max, discription, skill } = req.body;
-        const [result] = await mysqlpool.execute("insert into job(experince_required,location,job_type,sallery_min,sallery_max,discription) values (?,?,?,?,?,?)", [experince_required, location, job_type, sallery_min, sallery_max, discription]);
-        const lastInsertedId = result.insertId;
-        console.log("last inserted id", lastInsertedId)
-        console.log("employer", employer)
-        await mysqlpool.execute("insert into employer_job(job_id,employer_id) values(?,?)", [lastInsertedId, employer.employer_id]);
-        res.status(201).send({
-            message: "job posted successfull"
-        })
-    
-        // console.log(err)
-        // res.status(500).send({
-        //     message: "internal server error",
-        //     err
-        // })
-    
-
+    // get email from token
+    const decodedToken = await getCredentialFromToken();
+    const employer = await loadUserByUserName(decodedToken.email);
+    const { experince_required, location, job_type, sallery_min, sallery_max, discription, skill } = req.body;
+    const [result] = await mysqlpool.execute("insert into job(experince_required,location,job_type,sallery_min,sallery_max,discription) values (?,?,?,?,?,?)", [experince_required, location, job_type, sallery_min, sallery_max, discription]);
+    const lastInsertedId = result.insertId;
+    console.log("last inserted id", lastInsertedId)
+    console.log("employer", employer)
+    await mysqlpool.execute("insert into employer_job(job_id,employer_id) values(?,?)", [lastInsertedId, employer.employer_id]);
+    res.status(201).send({
+        message: "job posted successfull"
+    })
 })
 
 const getAllJobs = async (req, res) => {
@@ -66,12 +55,12 @@ const getJobsByEmployer = async (req, res) => {
         const [[employer]] = await loadUserByUserName(decodedToken.username, "employer");
         const [jobsId] = await mysqlpool.execute("select * from  employer_job where employer_id=? ", [employer.employer_id]);
 
-            let jobs=[]
-            for(let i=0;i<jobsId.length;i++){
-                let [[result]]=await mysqlpool.execute("select * from job where job_id=?", [jobsId[i].job_id]);
-                jobs.push(result)
-            }
-            
+        let jobs = []
+        for (let i = 0; i < jobsId.length; i++) {
+            let [[result]] = await mysqlpool.execute("select * from job where job_id=?", [jobsId[i].job_id]);
+            jobs.push(result)
+        }
+
 
         // await mysqlpool.execute("delete from job where job_id=?",[jobId]);
         console.log(jobs)
