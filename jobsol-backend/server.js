@@ -21,6 +21,7 @@ const asyncErrorHandler = require("./utils/asyncErrorHandler");
 
 
 
+
 const app = express();
 
 
@@ -57,13 +58,15 @@ app.use("/api", require("./routes/categoryRoute"));
 
 User.belongsToMany(Role, { through: UserRole });
 Role.belongsToMany(User, { through: UserRole });
-Job.belongsTo(User, { foreignKey: 'EmployerID' });
+Job.belongsTo(User, { foreignKey: 'employeerID' });
 Application.belongsTo(User, { foreignKey: 'SeekerID' });
 Application.belongsTo(Job, { foreignKey: 'JobID' });
 SeekerProfile.belongsTo(User, { foreignKey: 'UserID', primaryKey: true });
 EmployerProfile.belongsTo(User, { foreignKey: 'UserID', primaryKey: true });
 Job.belongsTo(Category, { through: JobCategory })
 Category.belongsToMany(Job, { through: JobCategory })
+sequelize.query("ALTER TABLE job MODIFY COLUMN jobDescription VARCHAR(500); ")   
+
 app.post("/api", asyncErrorHandler( async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({

@@ -4,7 +4,8 @@ const { DataTypes } = require('sequelize');
 const Job=sequelize.define("job",{
     jobId:{
         type:DataTypes.INTEGER,
-        primaryKey:true
+        primaryKey:true,
+        autoIncrement:true
     },
     experienceRequired:{
         type:DataTypes.INTEGER,
@@ -14,15 +15,11 @@ const Job=sequelize.define("job",{
         type:DataTypes.STRING,
         allowNull:false
     },
-    jobType:{
+    profileName:{
         type:DataTypes.STRING,
         allowNull:false
     },
-    profile:{
-        type:DataTypes.STRING,
-        allowNull:false
-    },
-    description:{
+    jobDescription:{
         type:DataTypes.STRING,
         allowNull:false
     },

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import jobsData from "../../data/data";
 import useDelayedRender from '../../hooks/useDelayedRender';
 import Preloader from '../preloader/Preloader';
+import { useEffect } from 'react';
 
 function Jobs() {
     const [jobs, setJobs] = useState([])

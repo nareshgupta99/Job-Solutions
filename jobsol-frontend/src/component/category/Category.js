@@ -1,7 +1,14 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
+import { getAllCategires } from '../../service/categoriesService';
 
 function Category() {
+
+    const [categories,setCategories]=useState([]);
+    useEffect=(()=>{
+        console.log("loading category")
+        getAllCategires()
+    },[])
    
     return (
         <div className="our-services section-pad-t30">
@@ -16,6 +23,7 @@ function Category() {
                     </div>
                 </div>
                 <div className="row d-flex justify-contnet-center">
+                    {/*  */}
                     <div className="col-xl-3 col-lg-3 col-md-4 col-sm-6">
                         <div className="single-services text-center mb-30">
                             <div className="services-ion">

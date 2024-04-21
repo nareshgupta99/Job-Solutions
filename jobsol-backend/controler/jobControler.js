@@ -1,117 +1,126 @@
 const mysqlpool = require("../config/db");
+const Job = require("../models/Job");
 const { getCredentialFromToken } = require("../utils/Auth");
 const asyncErrorHandler = require("../utils/asyncErrorHandler");
 const { loadUserByUserName } = require("./authControler");
+const { Op } = require('sequelize');
 
 
 const createJob = asyncErrorHandler(async (req, res) => {
-
-    console.log("in create job")
     // get email from token
     const decodedToken = await getCredentialFromToken();
     const employer = await loadUserByUserName(decodedToken.email);
-    const { experince_required, location, job_type, sallery_min, sallery_max, discription, skill } = req.body;
-    const [result] = await mysqlpool.execute("insert into job(experince_required,location,job_type,sallery_min,sallery_max,discription) values (?,?,?,?,?,?)", [experince_required, location, job_type, sallery_min, sallery_max, discription]);
-    const lastInsertedId = result.insertId;
-    console.log("last inserted id", lastInsertedId)
-    console.log("employer", employer)
-    await mysqlpool.execute("insert into employer_job(job_id,employer_id) values(?,?)", [lastInsertedId, employer.employer_id]);
+    console.log(employer)
+    let job = req.body;
+    const savedJob = await Job.create(job);
+    await savedJob.setUser(employer)
+
     res.status(201).send({
         message: "job posted successfull"
     })
 })
 
-const getAllJobs = async (req, res) => {
-    try {
-        const [jobs] = await mysqlpool.query("select * from job");
-        console.log(jobs);
-        res.status(200).send({
-            jobs
-        })
-    } catch (err) {
-        res.status(500).send({
-            message: "something went wrong pls. try after sometimes"
-        })
-    }
 
-}
+const getAllJobs = asyncErrorHandler(async (req, res) => {
 
-const getJobById = async (req, res) => {
-    try {
-        const { jobId } = req.params;
-        const [[job]] = await mysqlpool.execute("select * from job where job_id=?", [jobId])
-        res.status(200).send({ job })
-    } catch (err) {
-        res.status(500).send({
-            message: "something went wrong pls. try after sometime"
-        })
-    }
+    const jobs = await Job.findAll();
+    console.log(jobs);
+    res.status(200).send({
+        jobs,
+        success: true
+    })
 
-}
+})
 
-const getJobsByEmployer = async (req, res) => {
-    try {
-        const decodedToken = getCredentialFromToken();
-        const [[employer]] = await loadUserByUserName(decodedToken.username, "employer");
-        const [jobsId] = await mysqlpool.execute("select * from  employer_job where employer_id=? ", [employer.employer_id]);
+const getJobById = asyncErrorHandler(async (req, res) => {
 
-        let jobs = []
-        for (let i = 0; i < jobsId.length; i++) {
-            let [[result]] = await mysqlpool.execute("select * from job where job_id=?", [jobsId[i].job_id]);
-            jobs.push(result)
+    const { jobId } = req.params;
+    const job = await Job.findOne({
+        where: {
+            jobId: jobId,
         }
+    });
+
+    res.status(200).send({ job })
 
 
-        // await mysqlpool.execute("delete from job where job_id=?",[jobId]);
-        console.log(jobs)
-        res.status(200).send({
-            jobs
+})
+
+const getJobsByEmployer = asyncErrorHandler(async (req, res) => {
+
+    const decodedToken = getCredentialFromToken();
+    const employer = await loadUserByUserName(decodedToken.email);
+
+    let jobs = await Job.findAll({
+        where: {
+            employeerId: employer.userId
+        }
+    });
+
+    res.status(200).send({
+        jobs
+    })
+
+})
+
+const getJobsByLocation = asyncErrorHandler(async (req, res) => {
+
+    const { location } = req.params
+    const jobs = await Job.findAll({
+        where: {
+            location: {
+                [Op.like]: `%${location}%`
+            }
+        }
+    })
+    res.status(200).send({
+        jobs,
+        success: true
+    })
+})
+
+
+const deleteJobByJobId = asyncErrorHandler(async (req, res) => {
+
+    const { jobId } = req.params;
+    const job = await Job.findOne({
+        where: {
+            jobId: jobId
+        }
+    })
+    if (job) {
+        await Job.destroy({
+            where: {
+                jobId: jobId
+            }
         })
-    } catch (err) {
-        console.log(err)
-        res.status(500).send({
-            message: "internal server error",
-            err
-        })
-    }
-
-}
-
-const getJobsByLocation = async (req, res) => {
-    try {
-        const { location } = req.params
-        const [jobs] = await mysqlpool.execute("select * from job where location=?", [location])
-        res.status(200).send({ jobs })
-    } catch (err) {
-        res.status(500).send({
-            message: "something went wrong pls. try after sometime"
-        })
-    }
-}
-
-
-
-
-const deleteJobByJobId = async (req, res) => {
-    try {
-        const decodedToken = getCredentialFromToken();
-        const [[employer]] = await loadUserByUserName(decodedToken.username, "employer");
-        const { jobId } = req.params;
-        await mysqlpool.execute("delete from  employer_job where employer_id=? and job_id=?", [employer.employer_id, jobId])
-        await mysqlpool.execute("delete from job where job_id=?", [jobId]);
         res.status(200).send({
             message: `${jobId} job is deleted successfully`
         })
-    } catch (err) {
-        console.log(err)
-        res.status(500).send({
-            message: "internal server error",
-            err
+    } else {
+        res.status(200).send({
+            message: `${jobId} job is not found`
         })
     }
 
-}
+
+})
+
+const getJobsByProfileName = asyncErrorHandler(async (req, res) => {
+    const { profile } = req.params
+    const jobs = await Job.findAll({
+        where: {
+            profileName: {
+                [Op.like]: `%${profile}%`
+            }
+        }
+    })
+    res.status(200).send({
+        jobs,
+        success: true
+    })
+
+})
 
 
-
-module.exports = { createJob, getAllJobs, getJobById, getJobsByEmployer, getJobsByLocation, deleteJobByJobId }
+module.exports = { createJob, getAllJobs, getJobById, getJobsByEmployer, getJobsByLocation, deleteJobByJobId, getJobsByProfileName }

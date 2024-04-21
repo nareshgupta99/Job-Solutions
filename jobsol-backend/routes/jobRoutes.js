@@ -1,5 +1,5 @@
 const express=require("express");
-const { createJob, getAllJobs, getJobById, getJobsByEmployer, getJobsByLocation, deleteJobByJobId } = require("../controler/jobControler");
+const { createJob, getAllJobs, getJobById, getJobsByEmployer, getJobsByLocation, deleteJobByJobId, getJobsByProfileName } = require("../controler/jobControler");
 const { isAuthenticated, hasRole } = require("../utils/Auth");
 
 const router=express.Router();
@@ -10,10 +10,13 @@ router.get("/jobs",getAllJobs);
 
 router.get("/job/:jobId",getJobById);
 
-router.get("/jobs/employer/",getJobsByEmployer,isAuthenticated);
+router.get("/jobs/employer/",isAuthenticated,hasRole("ROLE_EMPLOYEER"),getJobsByEmployer);
 
 router.get("/jobs/location/:location",getJobsByLocation);
 
-router.delete("/job/:jobId",deleteJobByJobId,isAuthenticated);
+router.get("/jobs/profile/:profile",getJobsByProfileName);
+
+router.delete("/job/:jobId",isAuthenticated,hasRole("ROLE_EMPLOYEER"),deleteJobByJobId);
+
 
 module.exports=router;
