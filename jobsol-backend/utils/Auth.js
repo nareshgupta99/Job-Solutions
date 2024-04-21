@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const dotev = require("dotenv");
 const ApiError = require("./ApiError");
+const asyncErrorHandler = require("./asyncErrorHandler");
 
 
 dotev.config();
@@ -37,16 +38,32 @@ const getCredentialFromToken = (req, res, err, next) => {
     return decodedToken;
 }
 
-const hasROle = (authoriseRole) => {
+const hasROle =asyncErrorHandler( async (authoriseRole) => {
     //1. get roles from token 
     let {email}=decodedToken;
+
+    const user = await User.findOne({
+        where: { email },
+        include: {
+            model: Role,
+            through: 'UserRole' // This should be the name of your intermediate table
+        }
+    });
+    const userRoles = user.roles;
+    const roleNames = userRoles.map(role => role.dataValues.roleName);
     
 
     //2. math the roles from recieved roles in arguements
 
+    let result=roleNames.includes(authoriseRole);
+
 
     //3.throw error if not match else call the next function 
-}
+
+    if(result)next();
+    else throw new ApiError("Not authorised",401);
+
+})
 
 
 module.exports = { isAuthenticated, getCredentialFromToken, hasROle };
