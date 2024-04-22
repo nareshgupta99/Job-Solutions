@@ -74,6 +74,7 @@ const hasRole = (authoriseRole) => {
             console.log("in role function")
             //1. get roles from token 
             let { email } = decodedToken;
+            console.log("email",email)
             const user = await User.findOne({
                 where: { email },
                 include: {
@@ -83,13 +84,14 @@ const hasRole = (authoriseRole) => {
             });
             const userRoles = user.roles;
             const roleNames = userRoles.map(role => role.dataValues.roleName);
+            console.log("roles",roleNames)
 
 
             //2. math the roles from recieved roles in arguements
 
             let result = roleNames.includes(authoriseRole);
 
-
+            console.log(result)
             //3.throw error if not match else call the next function 
 
             if (result) next();

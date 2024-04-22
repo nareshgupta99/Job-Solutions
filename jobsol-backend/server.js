@@ -53,6 +53,8 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api-docs", swaggerUiExpress.serve, swaggerUiExpress.setup(swaggerDocs));
 app.use("/api", require('./routes/jobRoutes'));
 app.use("/api", require("./routes/categoryRoute"));
+app.use("/api",require("./routes/applyRoute"));
+app.use("/api",require("./routes/SeekerProfileRote"));
 
 
 

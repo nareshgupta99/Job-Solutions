@@ -1,61 +1,86 @@
-const mysqlpool = require("../config/db");
+const Job = require("../models/Job");
+const Application = require("../models/Application");
 const ApiError = require("../utils/ApiError");
 const asyncErrorHandler = require("../utils/asyncErrorHandler");
-const { getCredentialFromToken } = require("../utils/checkAuth");
+const { getCredentialFromToken } = require("../utils/Auth");
 const { loadUserByUserName } = require("./authControler");
 
-const createApply = asyncErrorHandler(async (req, res,next) => {
+const createApplication = asyncErrorHandler(async (req, res, next) => {
     const decodedToken = getCredentialFromToken();
-    const [[candidate]] = await loadUserByUserName(decodedToken.username, "employer");
-    if(!candidate){
-        next(new ApiError("internal server error",500));
-    }
-    else{
+    const candidate = await loadUserByUserName(decodedToken.email);
+    const { jobid } = req.params;
+    const job = await Job.findOne({
+        where: {
+            jobId: jobid
+        }
+    })
+    const savedApplication =await  Application.create({ ApplicationStatus: "PENDING", ApplicationDate: Date.now() });
+    savedApplication.setUser(candidate);
+    savedApplication.setJob(job);
+    (await savedApplication).save();
+    res.status(201).json({
+        message: "Application sent successfull",
+        success: true
+    })
 
-        const {jobid}=req.params;
-        const result=await mysqlpool.query("insert into apply (status,job_id,candidate_id) values(?,?,?)",["",jobid],decodedToken.candidate_id);
-        res.status(201).json({
-            message:"Application sent successfull",
-            success:true
-        })
-    }
 
 })
 
 
-const getApplyById = asyncErrorHandler(async (req, res) => {
+const getApplicationById = asyncErrorHandler(async (req, res) => {
+
+    const { applicationId } = req.params;
+    const application = await Application.findOne({
+        where: {
+            ApplicationID: applicationId
+        }
+    })
+    res.status(200).json({
+        application,
+        success: true
+    })
+})
+
+
+const getAllApplicationBySeeker = asyncErrorHandler(async (req, res) => {
     const decodedToken = getCredentialFromToken();
-    const [[candidate]] = await loadUserByUserName(decodedToken.username, "candidate");
-    if(!candidate){
-        next(new ApiError("internal server error",500));
-    }
-    else{
-        const {applyid}=req.params;
-       const [[result]]=await mysqlpool.query("select * from apply where apply_id=?",[applyid]);
-       res.status(200).json({
-        data:result,
+    const candidate = await loadUserByUserName(decodedToken.email);   
+    const applications=await Application.findAll({where:{
+        SeekerID:candidate.userId
+    }})
+    res.status(200).json({
+        applications,
         success:true
-       })
-    }
+    })
 })
 
-const getAppliedByCandidate = asyncErrorHandler(async (req, res) => {
-    const decodedToken = getCredentialFromToken();
-    const [[candidate]] = await loadUserByUserName(decodedToken.username, "candidate");
-    if(!candidate){
-        next(new ApiError("internal server error",500));
-    }
-    // const [applies]=select * from 
-
-
-})
-
-
-
-
-const getAppliedJobByJobId=asyncErrorHandler(async(req,res)=>{
-
+const getAllApplicationJobByJobId = asyncErrorHandler(async (req, res) => {
+    const {jobId}=req.params
+    const applications=await Application.findAll({
+        where:{
+            JObID:jobId
+        }
+    })
+    res.status(200).json({
+        applications,
+        success:true
+    })
 })
 
 
-module.exports = { createApply,  getApplyById ,getAppliedJobByJobId,getAppliedByCandidate};
+const updateJobStatusById=asyncErrorHandler(async (req,res)=>{
+    const {applicationId}=req.params;
+    const {ApplicationStatus}=req.body;
+   const application=await  Application.findOne({where:{
+        ApplicationId:applicationId
+    }})
+    application.ApplicationStatus=ApplicationStatus;
+    await application.save();
+    res.status(200).json({
+        application,
+        success:true
+
+    })
+})
+
+module.exports = { createApplication, getAllApplicationJobByJobId, getApplicationById, getAllApplicationBySeeker,updateJobStatusById };
