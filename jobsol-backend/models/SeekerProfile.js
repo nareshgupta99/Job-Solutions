@@ -18,9 +18,13 @@ const SeekerProfile=sequelize.define("seekerProfile",{
     },
     expectedSallery:{
         type:DataTypes.INTEGER
-    },resume:{
+    },resumeUrl:{
         type:DataTypes.STRING
-    },url:{
+    },imageUrl:{
+        type:DataTypes.STRING
+    },resumePublicId:{
+        type:DataTypes.STRING
+    },imagePublicId:{
         type:DataTypes.STRING
     }
     
