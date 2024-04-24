@@ -20,7 +20,7 @@ const SeekerProfile=sequelize.define("seekerProfile",{
         type:DataTypes.INTEGER
     },resume:{
         type:DataTypes.STRING
-    },pic:{
+    },url:{
         type:DataTypes.STRING
     }
     

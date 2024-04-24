@@ -18,14 +18,10 @@ const JobCategory = require("./models/JobCategory");
 const { isAuthenticated } = require("./utils/Auth");
 const ApiError = require("./utils/ApiError");
 const asyncErrorHandler = require("./utils/asyncErrorHandler");
-
-
+const cloudinary=require("cloudinary");
 
 
 const app = express();
-
-
-
 
 //configure dotenv file
 
@@ -45,6 +41,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 
 
+
+//cloudinary configuration
+
+cloudinary.config({ 
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+    api_key: process.env.CLOUDINARY_API_KEY, 
+    api_secret:  process.env.CLOUDINARY_API_SECRET
+  });
 
 
 
