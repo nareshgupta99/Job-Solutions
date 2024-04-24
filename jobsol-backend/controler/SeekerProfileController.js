@@ -10,27 +10,29 @@ const createSeekerProfile=asyncErrorHandler (async (req,res)=>{
     const decodedToken = getCredentialFromToken();
     const candidate = await loadUserByUserName(decodedToken.email);
     const data=req.body;
-    const savedSeeker=await SeekerProfile.create(data);
-    savedSeeker.setUser(candidate);
+    let seekerProfile=await SeekerProfile.findOne({where:{
+        UserID:candidate.userId
+    }})
+    if(!seekerProfile){
+        const savedSeeker=await SeekerProfile.create(data);
+        savedSeeker.setUser(candidate);
+        savedSeeker.save();
+    }
+    else{
+        const data = req.body;
+    seekerProfile.dob=data.dob;
+    seekerProfile.contactNumber=data.contactNumber;
+    seekerProfile.about=data.about;
+    seekerProfile.expectedSallery=data.expectedSallery;
+    seekerProfile.save()
+    }
     res.status(200).send({
         message: "profile updated succeessfully",
         success:true
     })
 })
 
-const updateSeekerProfile=asyncErrorHandler (async(req,res)=>{
-    const decodedToken = getCredentialFromToken();
-    const candidate = await loadUserByUserName(decodedToken.email);
-    const seekerProfile=await SeekerProfile.findOne({where:{
-        UserID:candidate.userId
-    }})
-    seekerProfile={...seekerProfile,data}
-    seekerProfile.save();
-    const data = req.body;
-     res.status(200).send({
-        message: "profile updated succeessfully"
-    })
-})
+
 
 const uploadProfilePic=asyncErrorHandler(async(req,res)=>{
     const decodedToken = getCredentialFromToken();
@@ -114,4 +116,4 @@ const deleteResume=asyncErrorHandler(async(req,res)=>{
    })
 })
 
-module.exports={createSeekerProfile,updateSeekerProfile,uploadProfilePic,uploadResume,deleteResume}
+module.exports={createSeekerProfile,uploadProfilePic,uploadResume,deleteResume}

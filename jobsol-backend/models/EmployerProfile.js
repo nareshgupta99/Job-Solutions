@@ -7,15 +7,6 @@ const EmployerProfile=sequelize.define("employerProfile",{
         primaryKey: true,
         autoIncrement: true,
     },
-    email:{
-        type:DataTypes.STRING,
-        allowedNull:false
-    },
-    employeerId:{
-        type:DataTypes.INTEGER,
-        autoIncrement:true,
-        primaryKey:true
-    },
     companyName:{
         type:DataTypes.STRING,
         allowedNull:false
