@@ -5,21 +5,21 @@ import Slider from '../slider/Slider'
 import Preloader from '../preloader/Preloader'
 import useDelayedRender from '../../hooks/useDelayedRender'
 import ApplyProcess from '../process/ApplyProcess'
+import EmployeerBanner from '../employeer/EmployeerBanner'
 
 function Home() { 
- const showComponent=useDelayedRender(100);
+//  const showComponent=useDelayedRender(100);
 
   
-  return showComponent ? (
+  return (
     <div>
       <Slider />
       <Category />
       <ApplyProcess />
+      <EmployeerBanner />
       <Fotter/>
     </div>
-  ) : (
-    <Preloader />
-  );
+  ) 
 }
 
 export default Home

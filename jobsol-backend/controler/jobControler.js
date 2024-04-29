@@ -23,7 +23,16 @@ const createJob = asyncErrorHandler(async (req, res) => {
 
 const getAllJobs = asyncErrorHandler(async (req, res) => {
 
-    const jobs = await Job.findAll();
+    const { page = 1, limit = 10 } = req.query;
+    const offset = (page - 1) * limit;
+    
+        const jobs = await Job.findAll({
+          offset: offset,
+          limit: parseInt(limit, 10),
+        });
+    
+    //   const jobs = await Job.findAllPaginated(Job, options);
+    // const jobs = await Job.findAll();
     console.log(jobs);
     res.status(200).send({
         jobs,

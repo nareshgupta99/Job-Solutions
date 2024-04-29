@@ -31,5 +31,18 @@ const createEmployeerProfile=asyncErrorHandler(async (req,res)=>{
     
 })
 
+const getEmployeerProfile=asyncErrorHandler(async(req,res,next)=>{
+    const decodedToken = getCredentialFromToken();
+    const employeer = await loadUserByUserName(decodedToken.email);
+    const savedEmployeer=await EmployerProfile.findOne({where:{
+        UserID:employeer.userId
+    }})
 
-module.exports={createEmployeerProfile};
+    res.status(200).json({
+        savedEmployeer,
+        success:true
+
+    })
+})
+
+module.exports={createEmployeerProfile,getEmployeerProfile};

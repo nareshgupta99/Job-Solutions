@@ -7,6 +7,10 @@ const SeekerProfile=sequelize.define("seekerProfile",{
         primaryKey: true,
         autoIncrement: true,
     },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     dob:{
         type:DataTypes.DATE
     },

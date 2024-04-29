@@ -1,12 +1,11 @@
 import React, { useContext, useState } from 'react'
-import Preloader from '../preloader/Preloader';
-import useDelayedRender from '../../hooks/useDelayedRender';
 import AuthContext from '../../context/AuthContext';
 import { useNavigate } from 'react-router';
 import { registerUser } from '../../service/authService';
+import {  toast } from 'react-toastify';
 
 function RegisterCandidate({role}) {
-  const showComponent=useDelayedRender(100);
+  
   
   const {setToken}=useContext(AuthContext);
 
@@ -18,7 +17,6 @@ function RegisterCandidate({role}) {
     password: "",
     confirmPassword: "",
     gender: "",
-    phone:"",
     roleName:role
   })
 
@@ -33,14 +31,15 @@ function RegisterCandidate({role}) {
     try{
      const {token}= await registerUser(data);
      setToken(token);
-     console.log(token)
-    //  navigate("/home");
+     console.log(token);
+      toast.success("Registerd successfully");
+     navigate("/home");
     }catch(err){
       console.log(err)
     }
   }
 
-  return showComponent?(
+  return (
     <div className="col-lg-4 border p-3 m-auto">
       <form className="form-contact contact_form" >
         <div className="row">
@@ -52,11 +51,6 @@ function RegisterCandidate({role}) {
           <div className="col-sm-12">
             <div className="form-group">
               <input className="form-control valid" name="email" id="email" type="email"   placeholder="denis@example.com" onChange={changeHandler} value={data.email} />
-            </div>
-          </div>
-          <div className="col-sm-12">
-            <div className="form-group">
-              <input className="form-control valid" name="phone" id="phone" type="phone"   placeholder="111111"  onChange={changeHandler} value={data.phone}/>
             </div>
           </div>
           <div className="col-12">
@@ -76,8 +70,6 @@ function RegisterCandidate({role}) {
         </div>
       </form>
     </div>
-  ):(
-    <Preloader />
   )
 }
 

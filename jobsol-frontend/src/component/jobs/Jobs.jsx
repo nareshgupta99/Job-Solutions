@@ -1,19 +1,42 @@
-import React, {  useState } from 'react'
+import React, {  useState,useEffect } from 'react'
 import jobsData from "../../data/data";
-import useDelayedRender from '../../hooks/useDelayedRender';
-import Preloader from '../preloader/Preloader';
-import { useEffect } from 'react';
 
 function Jobs() {
     const [jobs, setJobs] = useState([])
-    useEffect(() => {
-        setJobs(jobsData);
-    }, [jobs])
+    const [page, setPage] = useState(1);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //       try {
+           
+    //         setItems(prevItems => [...prevItems, ...response.data]);
+    //         setPage(prevPage => prevPage + 1);
+    //       } catch (error) {
+    //         console.error('Error fetching data:', error);
+    //       }
+    //     };
+    
+    //     fetchData();
+    //   }, [page]);
 
-    const showComponent=useDelayedRender(1000)
+    //   const handleScroll = () => {
+    //     if (
+    //       window.innerHeight + document.documentElement.scrollTop
+    //       === document.documentElement.offsetHeight
+    //     ) {
+    //       fetchData(); // Load more data when scrolled to the bottom
+    //     }
+    //   };
+
+    //   useEffect(() => {
+    //     window.addEventListener('scroll', handleScroll);
+    //     return () => {
+    //       window.removeEventListener('scroll', handleScroll);
+    //     };
+    //   }, []); 
 
 
-    return showComponent ?(
+
+    return (
         <section class="featured-job-area feature-padding">
             <div class="container">
                 {/* <!-- Section Tittle --> */}
@@ -57,8 +80,6 @@ function Jobs() {
             </div>
         </section>
 
-    ):(
-        <Preloader />
     )
 }
 

@@ -9,7 +9,7 @@ function AuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
   const getUser = async () => {
 
-  }
+  } 
 
   return (
     <AuthContext.Provider value={{ setToken, user, setUser }}>
