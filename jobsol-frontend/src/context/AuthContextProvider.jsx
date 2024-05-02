@@ -1,18 +1,19 @@
 import React, { useState } from 'react'
 import AuthContext from './AuthContext'
+import { getUserFromToken } from '../service/authService';
 
 function AuthContextProvider({ children }) {
+  const token = localStorage.getItem('token');
+  const initialUser = token ? getUserFromToken : null;
+  const initialIsLoggedIn = !!token && !!initialUser;
 
-  const setToken = (token) => {
-    return localStorage.setItem("token", token);
-  }
-  const [user, setUser] = useState(null);
-  const getUser = async () => {
-
-  } 
+  const [auth,setAuth]=useState({
+    user:initialUser,
+    isLoogedIn:initialIsLoggedIn
+  })
 
   return (
-    <AuthContext.Provider value={{ setToken, user, setUser }}>
+    <AuthContext.Provider value={{ auth,setAuth }}>
       {children}
     </AuthContext.Provider>
   )

@@ -1,24 +1,20 @@
 import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router';
-import { registerUser } from '../../service/authService';
+import { getLoginUser, getUserFromToken, loginUser   } from '../../service/authService';
 import { toast } from 'react-toastify';
 import AuthContext from '../../context/AuthContext';
-import { getUserFromToken } from '../../service/authService';
+import { Link } from 'react-router-dom';
 
-function RegisterCandidate({ role }) {
+
+function Login({ role }) {
 
   const {auth,setAuth}=useContext(AuthContext);
 
   const navigate = useNavigate();
 
-
   const [data, setData] = useState({
-    name: "",
     email: "",
     password: "",
-    confirmPassword: "",
-    gender: "",
-    roleName: role
   })
 
   const changeHandler = (event) => {
@@ -30,23 +26,25 @@ function RegisterCandidate({ role }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const res  = await registerUser(data);
+      const res  = await loginUser(data);
       const {token}=res.data
       const {success}=res.data
       const {message}=res.data
       console.log(token,success,message)    
-        localStorage.setItem("token",token);
+       
       if(success==true){
         toast.success(message)
-        const user= getUserFromToken(token);
+        localStorage.setItem("token",token)
+        // geeting user and roles from token
+       const user= getUserFromToken(token);
        setAuth({...auth,user:user,isLoogedIn:true})
         navigate("/home");
       } else{
         toast.error(message)
       }
     } catch (err) {
-      toast.error(err.message)
-      console.log(err)
+      const {message,success}=err.response.data
+      toast.error(message)
     }
   }
 
@@ -54,11 +52,7 @@ function RegisterCandidate({ role }) {
     <div className="col-lg-4 border p-3 m-auto">
       <form className="form-contact contact_form" >
         <div className="row">
-          <div className="col-sm-12 col-sm-7">
-            <div className="form-group">
-              <input className="form-control valid" name="name" id="name" type="text" placeholder="Denis " onChange={changeHandler} value={data.name} />
-            </div>
-          </div>
+         
           <div className="col-sm-12">
             <div className="form-group">
               <input className="form-control valid" name="email" id="email" type="email" placeholder="denis@example.com" onChange={changeHandler} value={data.email} />
@@ -69,36 +63,16 @@ function RegisterCandidate({ role }) {
               <input className="form-control" name="password" id="password" type="password" placeholder="Enter Password" onChange={changeHandler} value={data.password} />
             </div>
           </div>
-          <div className="col-12">
-            <div className="form-group">
-              <input className="form-control" name="confirmPassword" id="confirmPassword" type="password" placeholder="Enter Confirm Password" onChange={changeHandler} value={data.confirmPassword} />
-            </div>
-          </div>
-          {/* <div className="col-12">
-            <div className="form-group">
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <div>
-
-                  <label>Male</label>
-                  <input type="radio" className="" name="gender" onChange={changeHandler} value="male" />
-                </div>
-                <div>
-
-                  <label>Female</label>
-                  <input type="radio" className="" name="gender" onChange={changeHandler} value="female" />
-                </div>
-              </div>
-            </div>
-          </div> */}
 
         </div>
         <div className="form-group mt-3">
 
           <button type="submit" className="button button-contactForm boxed-btn w-100" onClick={handleSubmit}>Register</button>
         </div>
+        <Link to={"/auth/user/forgot"} style={{color:"black"}}>Forgot Password</Link>
       </form>
     </div>
   )
 }
 
-export default RegisterCandidate
+export default Login

@@ -5,10 +5,7 @@ import { getAllCategires } from '../../service/categoriesService';
 function Category() {
 
     const [categories,setCategories]=useState([]);
-    useEffect=(()=>{
-        console.log("loading category")
-        getAllCategires()
-    },[])
+  
    
     return (
         <div className="our-services section-pad-t30">

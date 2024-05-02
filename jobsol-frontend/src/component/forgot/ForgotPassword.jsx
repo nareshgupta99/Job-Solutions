@@ -1,64 +1,64 @@
+import React, { useContext, useState } from 'react'
+import { useNavigate } from 'react-router';
+import {  getUserFromToken,  forgotPassword  } from '../../service/authService';
+import { toast } from 'react-toastify';
+import AuthContext from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
-// import '../forgot/forgot.css';  
-import { useState } from 'react';
-import { forgotPassword } from '../../service/authService';
-const ForgotPassword = () => {
-  const [email,setEmail]=useState("");
 
-  const handleChange=(e)=>{
-    e.preventDefault();
-    setEmail(e.target.value);
-    console.log(email)
+
+function Login({ role }) {
+
+
+
+  const [data, setData] = useState({
+    email: "",
+  })
+
+  const changeHandler = (event) => {
+    event.preventDefault();
+    setData({ ...data, [event.target.name]: event.target.value })
+    console.log(data)
   }
 
-  const handleSubmit=async(e)=>{
-    e.preventDefault();
-    console.log("forgot")
-    try{
-      const res=await forgotPassword({email:email});
-      console.log(res);
-
-    }catch(err){
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const res  = await forgotPassword(data);
+      const {token}=res.data
+      const {success}=res.data
+      const {message}=res.data
+      console.log(token,success,message) 
+      if(success==true){
+        toast.success(message)
+      } else{
+        toast.error(message)
+      }
+    } catch (err) {
+      toast.error(err.message)
       console.log(err)
     }
   }
 
-  const wrapper={
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#6ddecd",
-    borderRadius: "0.8rem"
-  }
-
-  const input={
-    width:" 250px",
-    height: "30px",
-    outline: "none",
-    border: "none",
-    borderRadius: "0.3rem",
-    paddingLeft: "35px",
-  }
-
   return (
-    <div>
-      <div className="wrapper" style={wrapper}>
-        <h1 style={{fontSize: "30px"}}>Forgot Password</h1>
-        <div className="inputs" style={{marginTop:"10px"}}>
-          <div className="field">
-            <input type="email" placeholder="Find your Email or Phone" name="email" onChange={handleChange} value={email} style={input}/>
-          <button type="submit" onClick={handleSubmit}>Send</button>
+    <div className="col-lg-4 border p-3 m-auto">
+      <form className="form-contact contact_form" >
+        <div className="row">
+         
+          <div className="col-sm-12">
+            <div className="form-group">
+              <input className="form-control valid" name="email" id="email" type="email" placeholder="denis@example.com" onChange={changeHandler} value={data.email} />
+            </div>
           </div>
+          
         </div>
-        <div className="link1">
-          <p style={{margin:"34px 0"}}>
-            Back To <Link to="/candidate/signup" >Signin.</Link>
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
+        <div className="form-group mt-3">
 
-export default ForgotPassword;
+          <button type="submit" className="button button-contactForm boxed-btn w-100" onClick={handleSubmit}>Send Email</button>
+        </div>
+       
+      </form>
+    </div>
+  )
+}
+
+export default Login

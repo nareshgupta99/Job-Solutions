@@ -1,6 +1,6 @@
-import { PublicAxios } from './axiosConfig';
-
-
+import { useContext } from 'react';
+import { PrivateAxios, PublicAxios } from './axiosConfig';
+import AuthContext from '../context/AuthContext';
 
 
 const registerUser=async (user)=>{
@@ -13,8 +13,8 @@ const registerUser=async (user)=>{
     return data;
 }
 
-const candidateLogin = async (candidate) => {
-    const data = await PublicAxios.post("auth/candidate/login", candidate, {
+const loginUser = async (candidate) => {
+    const data = await PublicAxios.post("/auth/user/login", candidate, {
         headers: {
             "Content-Type": "application/json",
         }
@@ -29,12 +29,12 @@ const getToken=()=>{
 }
 
 const forgotPassword=async (email)=>{
-    const data = await PublicAxios.post("auth/candidate/forgot-password",email)
+    const data = await PublicAxios.post("/auth/user/forgot-password",email)
     return data;
 }
 
-const resetCandidatePassword=async(data,resetToken)=>{
-    const res=await PublicAxios.patch(`/auth/candidate/reset-password/${resetToken}`,data);
+const resetPassword=async(data,resetToken)=>{
+    const res=await PublicAxios.patch(`/auth/user/reset-password/${resetToken}`,data);
     return res;
 }
 
@@ -44,5 +44,25 @@ const employeerSignup=async (data)=>{
 }
 
 
+const getLoginUser= async()=>{
+   return await PrivateAxios.get("/auth/user");
+}
 
-export {  candidateLogin ,getToken,forgotPassword,resetCandidatePassword,employeerSignup,registerUser}
+function getUserFromToken(token) {
+    if (!token) return null;
+    const decodedToken = JSON.parse(atob(token.split(".")[1])); // decode jwt token
+    return {
+        email:decodedToken.email,
+        is_enabled:decodedToken.is_enabled,
+        roles:decodedToken.roles
+    }
+  }
+
+ 
+
+  
+
+
+
+
+export {  loginUser ,getToken,forgotPassword,resetPassword,employeerSignup,registerUser,getLoginUser,getUserFromToken}

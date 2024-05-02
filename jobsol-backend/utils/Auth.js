@@ -23,7 +23,7 @@ const isAuthenticated = async (req, res, next) => {
         decodedToken = jwt.verify(token, process.env.SECRET);
         console.log(decodedToken)
         if (Date.now() < new Date(decodedToken.exp)) {
-            throw new ApiError("Jwt Token is Expired", 401);
+            new ApiError("Jwt Token is Expired", 401);
         }
         next();
     } catch (err) {

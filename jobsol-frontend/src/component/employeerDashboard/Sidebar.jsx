@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import '../employeerDashboard/sidebar.css';
-import EmployerProfile from './profile/EmployerProfile';
+import JobPosting from './JobPosting';
+import Jobs from './Jobs';
+import Applications from './Applications';
+import SeekerProfile from './SeekerProfile';
 
 function Sidebar() {
     const [toogler, setToogler] = useState(true)
@@ -18,7 +21,7 @@ function Sidebar() {
                         <i className="lni lni-grid-alt"></i>
                     </button>
                     <div className="sidebar-logo">
-                        <Link to="#">CodzSword</Link>
+                        <Link to="#">JobSolution</Link>
                     </div>
                 </div>
                 <ul className="sidebar-nav">
@@ -31,7 +34,13 @@ function Sidebar() {
                     <li className="sidebar-item">
                         <Link to="#" className="sidebar-link">
                             <i className="lni lni-agenda"></i>
-                            <span>Task</span>
+                            <span>Post a Job</span>
+                        </Link>
+                    </li>
+                    <li className="sidebar-item">
+                        <Link to="#" className="sidebar-link">
+                            <i className="lni lni-popup"></i>
+                            <span>Show Jobs</span>
                         </Link>
                     </li>
                     <li className="sidebar-item">
@@ -92,7 +101,11 @@ function Sidebar() {
                     </Link>
                 </div>
             </aside>
-            <EmployerProfile/>
+            {/* <EmployerProfile/> */}
+            {/* <JobPosting /> */}
+            {/* <Jobs /> */}
+            {/* <Applications /> */}
+            <SeekerProfile />
         </div>
     )
 }

@@ -9,6 +9,8 @@ const User = require("../models/User");
 const { Role } = require("../models/Role");
 const e = require("express");
 const UserRole = require("../models/UserRole");
+const { getCredentialFromToken } = require("../utils/Auth");
+
 dotenv.config();
 
 const userRegistration = asyncErrorHandler(async (req, res, next) => {
@@ -46,7 +48,8 @@ const userRegistration = asyncErrorHandler(async (req, res, next) => {
         res.status(200).send({
             message: "user Registered successfully",
             token: jwt_token,
-            is_enabled: true
+            is_enabled: true,
+            success:true
         });
     }
 
@@ -72,7 +75,8 @@ const userLogin = asyncErrorHandler(async (req, res, next) => {
             res.status(200).send({
                 message: "user login succesfully",
                 token,
-                is_enabled: true
+                is_enabled: true,
+                success:true
             })
 
         }
@@ -103,16 +107,17 @@ const forgotPassword = asyncErrorHandler(async (req, res, next) => {
         user.passwordResetToken = hashedToken;
         user.expiresIn = expires_in;
         await user.save()
-        //saved into database
+                //saved into database
         const subject = "password change request"
         // const url = `${req.protocol}://${req.get('host')}/api/auth/candidate/reset-password/${reset_token}`;
-        const url = `${process.env.ORIGIN}/candidate/reset/${reset_token}`;
+        const url = `${process.env.ORIGIN}/auth/user/reset/${reset_token}`;
         const message = `To reset this password click here \n\n ${url}`
 
         await sendEmail({ email, subject, message });
 
         res.status(200).send({
-            message: "email sent successfully check your inbox"
+            message: "email sent successfully check your inbox",
+            success:true
         })
     }
 })
@@ -130,11 +135,14 @@ const resetPassword = async (req, res, next) => {
         const expires_in = new Date(user.expiresIn);
         const currentDateTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
         if (expires_in > new Date(currentDateTime)) {
-            user.password = req.body.password;
+            const saltRounds = 10;
+        const encryptedPassword = await bcrypt.hash(req.body.password, saltRounds);
+            user.password = encryptedPassword;
             user.passwordResetToken="";
             await user.save();
             res.status(200).json({
-                message: "password set successfully"
+                message: "password set successfully",
+                success:true
             })
         } else {
             next(new ApiError("token is expire ", 400));
@@ -189,4 +197,14 @@ const isRoleValid = (roles, role) => {
 }
 
 
-module.exports = { userRegistration, userLogin, forgotPassword, resetPassword, verifyEmail, loadUserByUserName }
+const getLoggedUser=async (req,res)=>{
+    const decodedToken = getCredentialFromToken();
+    const candidate = await loadUserByUserName(decodedToken.email);
+    res.status(201).json({
+        candidate,
+        message: "Application sent successfull",
+        success: true
+    })
+}
+
+module.exports = { userRegistration, userLogin, forgotPassword, resetPassword, verifyEmail, loadUserByUserName,getLoggedUser }

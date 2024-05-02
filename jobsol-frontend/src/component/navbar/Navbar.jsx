@@ -1,10 +1,19 @@
-import React, { useState } from 'react'
+import React, { useContext, useState ,useEffect} from 'react'
 import { Link } from 'react-router-dom';
+import AuthContext from '../../context/AuthContext';
+import { CgProfile } from "react-icons/cg";
+import { Popover } from "antd";
 
 function Navbar() {
-    const [isOpen,setIsOpen]=useState(false)
+    const [isOpen, setIsOpen] = useState(false)
+    const { auth } = useContext(AuthContext)
+    useEffect(() => {
+        console.log(auth)
+      
+    }, [auth])
+    
 
-    const menueToggler=(e)=>{
+    const menueToggler = (e) => {
         e.preventDefault();
         setIsOpen(!isOpen);
     }
@@ -42,8 +51,8 @@ function Navbar() {
                                 <div className="logo">
                                     <Link to="/home">
                                         <img src="assets/img/logo/logo.png" alt="" />
-                                        
-                                        </Link>
+
+                                    </Link>
                                 </div>
                             </div>
                             <div className="col-lg-9 col-md-9">
@@ -69,8 +78,14 @@ function Navbar() {
                                     </div>
                                     {/* <!-- Header-btn --> */}
                                     <div className="header-btn d-none f-right d-lg-block">
-                                        <Link to="/user/signup" className="btn head-btn1">Register</Link>
-                                        <Link to="/user/login" className="btn head-btn2 ">Login</Link>
+                                        {!(auth.user && auth.isLoogedIn) ?
+
+                                            <>
+                                                <Link to="/auth/user/signup" className="btn head-btn1">Register</Link>
+                                                <Link to="/auth/user/login" className="btn head-btn2 ">Login</Link>
+                                            </>
+                                            : <Link to="/user/logout" className="btn head-btn2 ">logout     </Link>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -80,12 +95,12 @@ function Navbar() {
                                     <div className='slicknav_menu'>
                                         <Link to="#" aria-haspopup="true" role="button" tabindex="0" className="slicknav_btn slicknav_collapsed" onClick={menueToggler}><span className="slicknav_menutxt">MENU</span><span className="slicknav_icon">
                                             <span className="slicknav_icon-bar"></span><span className="slicknav_icon-bar"></span><span className="slicknav_icon-bar"></span></span></Link>
-                                        <ul className="slicknav_nav slicknav_hidden" aria-hidden="true" role="menu" style={isOpen===false?{display: "none"}:{display:"block"}}>
+                                        <ul className="slicknav_nav slicknav_hidden" aria-hidden="true" role="menu" style={isOpen === false ? { display: "none" } : { display: "block" }}>
                                             <li><Link to="index.html" role="menuitem" tabindex="-1">Home</Link></li>
                                             <li><Link to="job_listing.html" role="menuitem" tabindex="-1">Find Link Jobs </Link></li>
                                             <li><Link to="about.html" role="menuitem" tabindex="-1">About</Link></li>
-                                            <li className="slicknav_collapsed slicknav_parent"><Link to="#" role="menuitem" aria-haspopup="true" tabindex="-1" className="slicknav_item slicknav_row" style={{outline: "none"}}><Link to="#" tabindex="-1">Page</Link>
-                                                <span className="slicknav_arrow">+</span></Link><ul className="submenu slicknav_hidden" role="menu" aria-hidden="true" style={{display:" none"}}>
+                                            <li className="slicknav_collapsed slicknav_parent"><Link to="#" role="menuitem" aria-haspopup="true" tabindex="-1" className="slicknav_item slicknav_row" style={{ outline: "none" }}><Link to="#" tabindex="-1">Page</Link>
+                                                <span className="slicknav_arrow">+</span></Link><ul className="submenu slicknav_hidden" role="menu" aria-hidden="true" style={{ display: " none" }}>
                                                     <li><Link to="blog.html" role="menuitem" tabindex="-1">Blog</Link></li>
                                                     <li><Link to="single-blog.html" role="menuitem" tabindex="-1">Blog Details</Link></li>
                                                     <li><Link to="elements.html" role="menuitem" tabindex="-1">Elements</Link></li>

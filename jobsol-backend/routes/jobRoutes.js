@@ -6,7 +6,7 @@ const router=express.Router();
 
 router.post("/employeer/job/create",isAuthenticated,hasRole("ROLE_EMPLOYEER"),createJob);
 
-router.get("/jobs",getAllJobs);
+router.get("/job",getAllJobs);
 
 router.get("/job/:jobId",getJobById);
 

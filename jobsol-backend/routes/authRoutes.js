@@ -1,5 +1,6 @@
 const express=require("express");
-const {   resetPassword, verifyEmail,  userRegistration,  forgotPassword, userLogin } = require("../controler/authControler");
+const {   resetPassword, verifyEmail,  userRegistration,  forgotPassword, userLogin, getLoggedUser } = require("../controler/authControler");
+const { isAuthenticated, hasRole } = require("../utils/Auth");
 
 const router=express.Router();
 
@@ -46,7 +47,7 @@ router.post("/user/forgot-password",forgotPassword);
 router.patch("/user/reset-password/:resetToken",resetPassword);
 // router.patch("/user/:verifyToken",verifyEmail);
 
-
+router.get("/user",isAuthenticated,getLoggedUser);
 
 
 module.exports=router;
