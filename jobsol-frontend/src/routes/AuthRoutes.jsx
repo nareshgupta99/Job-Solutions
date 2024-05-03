@@ -6,7 +6,10 @@ const AuthRoutes = () => {
 
 
   const {auth}=useContext(AuthContext);
-  console.log(auth);
+
+ const {user}=auth
+//  const {roles}=user
+//  console.log(roles[0].roleName)
 
   const navigate = useNavigate()
 

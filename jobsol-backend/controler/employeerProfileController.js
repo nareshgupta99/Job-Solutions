@@ -34,12 +34,19 @@ const createEmployeerProfile=asyncErrorHandler(async (req,res)=>{
 const getEmployeerProfile=asyncErrorHandler(async(req,res,next)=>{
     const decodedToken = getCredentialFromToken();
     const employeer = await loadUserByUserName(decodedToken.email);
-    const savedEmployeer=await EmployerProfile.findOne({where:{
+    let savedEmployeer=await EmployerProfile.findOne({where:{
         UserID:employeer.userId
     }})
-
+    let data;
+    if(savedEmployeer){
+        const {dataValues}=savedEmployeer
+        delete dataValues.UserID
+        data=dataValues
+        data={...data,email:employeer.email}
+        console.log(data)
+    }
     res.status(200).json({
-        savedEmployeer,
+        ...data,
         success:true
 
     })

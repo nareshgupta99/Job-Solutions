@@ -6,13 +6,14 @@ import ResetPage from "./component/reset/ResetPage";
 import Jobs from "./component/jobs/Jobs";
 import JobsDetails from "./component/jobs/JobDetails";
 import RegisterCandidate from "./component/signup/RegisterCandidate";
-import PrivateRoutes from "./routes/PrivateRoutes";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Sidebar from "./component/employeerDashboard/Sidebar";
 import Login from "./component/login/Login";
 import AuthRoutes from "./routes/AuthRoutes";
 import Logout from "./component/logout/logout";
+import EmployerProfile from "./component/employeerDashboard/profile/EmployerProfile";
+import EmployeerRoutes from "./routes/EmployeerRoutes";
 
 function App() {
   // console.log(user)
@@ -27,24 +28,20 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/home' element={<Home />} />
         <Route path="user/logout" element={<Logout />} />
+        <Route path="/jobs" element={<Jobs />} />
+        <Route path="/job/:jobId" element={<JobsDetails />} />
+        <Route path="/employeer" element={<EmployeerRoutes />}>
+          <Route path="dashboard" element={<Sidebar />} />
+
+        </Route>
+
         <Route path="/auth" element={<AuthRoutes />} >
-          {/* <Route path='/user/logout' element={ } /> */}
           <Route path="user/signup" element={<RegisterCandidate role={'ROLE_SEEKER'} />} />
           <Route path="employeer/signup" element={<RegisterCandidate role={'ROLE_EMPLOYEER'} />} />
           <Route path="user/login" element={<Login />} />
           <Route path='user/forgot' element={<ForgotPassword />} />
           <Route path="user/reset/:resetToken" element={<ResetPage />} />
-          
         </Route >
-        <Route path="/jobs" element={<Jobs />} />
-        <Route path="/job/:jobId" element={<JobsDetails />} />
-        <Route path="/side" element={<Sidebar />} />
-
-        <Route path="/auth" element={<PrivateRoutes />} >
-
-        </Route>
-
-
         <Route path='*' element={<h1>404 error</h1>} />
       </Routes>
 
@@ -53,5 +50,3 @@ function App() {
 }
 
 export default App;
-
-// const {resetToken}= useParams("resetToken");

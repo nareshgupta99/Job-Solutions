@@ -6,7 +6,7 @@ import AuthContext from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
 
 
-function Login({ role }) {
+function Login() {
 
   const {auth,setAuth}=useContext(AuthContext);
 
@@ -43,8 +43,12 @@ function Login({ role }) {
         toast.error(message)
       }
     } catch (err) {
-      const {message,success}=err.response.data
-      toast.error(message)
+      if(err.response){
+        const {message,success}=err.response.data
+        toast.error(message)
+      }else{
+        toast.error(err.message)
+      }
     }
   }
 

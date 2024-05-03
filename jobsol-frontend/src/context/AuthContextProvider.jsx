@@ -4,8 +4,9 @@ import { getUserFromToken } from '../service/authService';
 
 function AuthContextProvider({ children }) {
   const token = localStorage.getItem('token');
-  const initialUser = token ? getUserFromToken : null;
+  const initialUser = token ? getUserFromToken(token) : null;
   const initialIsLoggedIn = !!token && !!initialUser;
+  console.log(initialUser)
 
   const [auth,setAuth]=useState({
     user:initialUser,

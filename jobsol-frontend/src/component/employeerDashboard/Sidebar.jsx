@@ -5,6 +5,7 @@ import JobPosting from './JobPosting';
 import Jobs from './Jobs';
 import Applications from './Applications';
 import SeekerProfile from './SeekerProfile';
+import EmployerProfile from '../employeerDashboard/profile/EmployerProfile'
 
 function Sidebar() {
     const [toogler, setToogler] = useState(true)
@@ -101,11 +102,11 @@ function Sidebar() {
                     </Link>
                 </div>
             </aside>
-            {/* <EmployerProfile/> */}
+            <EmployerProfile/>
             {/* <JobPosting /> */}
             {/* <Jobs /> */}
             {/* <Applications /> */}
-            <SeekerProfile />
+            {/* <SeekerProfile /> */}
         </div>
     )
 }

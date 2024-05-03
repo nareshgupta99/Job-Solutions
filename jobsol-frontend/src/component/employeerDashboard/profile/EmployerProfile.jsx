@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import { getEmployeerProfile } from '../../../service/employeerService'
-
+import { getEmployeerProfile,updateEmployeerProfile } from '../../../service/employeerService'
+import { toast } from 'react-toastify';
 
 function EmployerProfile() {
     const [isEdit,setIsEdit]=useState(false)
+    const [employeerData,setEmployeerData]=useState({
+        companyName: "",
+        designation: "",
+        NoOfEmployee: "",
+        email: "",
+        password: "",
+        name:""
+    })
     const toggleEdit=()=>{
         setIsEdit(!isEdit)
     }
     const inputBoxStyle = {
         border: "none",
         outline: "none",
-        backgroundColor: "#F2F2F2"
+        backgroundColor: "#F2F2F2",
+        width:"300px"
     }
     const [employeer, setEmployeer] = useState({
         companyName: "",
@@ -18,16 +27,39 @@ function EmployerProfile() {
         NoOfEmployee: "",
         email: "",
         password: "",
-        contactPerson: ""
+        name:""
     })
+    
     useEffect(() => {
-        getEmployeerProfile().then((data) => {
-            setEmployeer(data)
-            console.log(data)
+        getEmployeerProfile().then((res) => {
+            const {data}=res;
+            setEmployeer({...data})
+
+            // console.log(employeer)
         }).catch((err) => {
             console.log(err)
         })
-    }, []);
+    }, [    ]);
+    
+        
+        const handleChange=(e)=>{
+            setEmployeerData({...employeerData,[e.target.name]:e.target.value});
+            console.log(employeerData)
+            console.log("in handle change")
+        }
+
+        const updateProfile=async ()=>{
+            
+             updateEmployeerProfile(employeerData).then((res)=>{
+                const {data}=res;
+                toast.success(data.message)
+                setIsEdit(!isEdit)
+             }).catch((err)=>{
+                toast.err(err.message)
+             })
+            
+        }
+    
 
     return (
         <main className="content px-3 py-4" style={{ width: "100vw" }}>
@@ -41,7 +73,12 @@ function EmployerProfile() {
                                     <h5 className="mb-2 fw-bold">
                                         Name
                                     </h5>
-                                    <input className="mb-2 fw-bold"  readOnly={!isEdit} style={inputBoxStyle} />
+                                    { isEdit?
+                                        <input className="mb-2 fw-bold"   style={inputBoxStyle} name={"name"}  onChange={handleChange} />:
+                                        <p style={inputBoxStyle}>{employeer.name}</p>
+
+                                    }
+                                    
                                 </div>
                             </div>
                         </div>
@@ -51,8 +88,11 @@ function EmployerProfile() {
                                     <h5 className="mb-2 fw-bold" >
                                         Email
                                     </h5>
-                                    <input className="mb-2 fw-bold" readOnly={!isEdit} style={inputBoxStyle} />
-
+                                    
+                                        {/* <input className="mb-2 fw-bold"  style={inputBoxStyle} value={employeerData.email}  name='email' onChange={handleChange}/> */}
+                                    
+                                    <p style={inputBoxStyle}>{employeer.email}</p>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -67,8 +107,12 @@ function EmployerProfile() {
                                 <div className="card-body py-4">
                                     <h5 className="mb-2 fw-bold" >
                                         No.Of Employee
-                                    </h5>
-                                    <input className="mb-2 fw-bold" readOnly={!isEdit} style={inputBoxStyle} />
+                                    </h5>{
+                                        isEdit?
+                                        <input className="mb-2 fw-bold"  style={inputBoxStyle} name='NoOfEmployee'   onChange={handleChange}/>
+                                    :
+                                    <p style={inputBoxStyle}>{employeer.NoOfEmployee}</p>
+                                    }
 
                                 </div>
                             </div>
@@ -80,7 +124,12 @@ function EmployerProfile() {
                                     <h5 className="mb-2 fw-bold" >
                                         Designation
                                     </h5>
-                                    <input className="mb-2 fw-bold" readOnly={!isEdit} style={inputBoxStyle} />
+                                    {
+                                        isEdit?
+                                        <input className="mb-2 fw-bold"  style={inputBoxStyle} name='designation'  onChange={handleChange}/>
+                                    :
+                                    <p style={inputBoxStyle}>{employeer.designation}</p>
+                                    }
 
                                 </div>
                             </div>
@@ -97,7 +146,12 @@ function EmployerProfile() {
                                     <h5 className="mb-2 fw-bold" >
                                         Company Name
                                     </h5>
-                                    <input className="mb-2 fw-bold" readOnly={!isEdit} style={{...inputBoxStyle,paddingRight:"50px"}} />
+                                    {
+                                        isEdit?
+                                        <input className="mb-2 fw-bold"  style={{...inputBoxStyle,paddingRight:"50px"}} name='companyName' onChange={handleChange}/>
+                                    :
+                                    <p style={inputBoxStyle}>{employeer.companyName}</p>
+                                    }
 
                                 </div>
                             </div>
@@ -111,7 +165,7 @@ function EmployerProfile() {
                     isEdit==false?
                 <button type="button" class="btn " style={{float:"right"}} onClick={toggleEdit}>Edit</button>
                 :
-                <button type="button" class="btn " style={{float:"right"}} onClick={toggleEdit}>Save</button>
+                <button type="button" class="btn " style={{float:"right"}} onClick={updateProfile}>Save</button>
                 }
             </div>
         </main>

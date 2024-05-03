@@ -4,8 +4,8 @@ const getEmployeerProfile=async()=>{
    return await PrivateAxios.get("/employeer/profile");
 }
 
-const updateEmployeerProfile=async()=>{
-    return await PrivateAxios.post("");
+const updateEmployeerProfile=async(employeerProfile)=>{
+    return await PrivateAxios.post("/employeer/profile",employeerProfile);
 }
 
 
