@@ -26,6 +26,18 @@ const Job=sequelize.define("job",{
     sallery:{
         type:DataTypes.INTEGER,
         allowNull:false
+    },
+    noOfOpenning:{
+        type:DataTypes.INTEGER,
+        allowNull:false
+    },
+    workMode:{
+        type:DataTypes.STRING,
+        allowNull:false
+    },
+    roleDetails:{
+        type:DataTypes.STRING,
+        allowNull:false
     }
 },{
     timestamps: false,

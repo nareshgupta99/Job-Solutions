@@ -1,9 +1,13 @@
-import { PublicAxios } from "./axiosConfig";
+import { PrivateAxios, PublicAxios } from "./axiosConfig";
 
 async function getAllJobs (page){
     const response = await PublicAxios.get(`/job?page=${page}`);
     return response;
 }
 
-export {getAllJobs};
+async function createJob(data){
+    return await PrivateAxios.post("/employeer/job/create",data);
+}
+
+export {getAllJobs,createJob};
 

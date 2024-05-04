@@ -102,8 +102,8 @@ function Sidebar() {
                     </Link>
                 </div>
             </aside>
-            <EmployerProfile/>
-            {/* <JobPosting /> */}
+            {/* <EmployerProfile/> */}
+            <JobPosting />
             {/* <Jobs /> */}
             {/* <Applications /> */}
             {/* <SeekerProfile /> */}
