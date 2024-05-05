@@ -4,7 +4,8 @@ const { getCredentialFromToken } = require("../utils/Auth");
 const asyncErrorHandler = require("../utils/asyncErrorHandler");
 const { loadUserByUserName } = require("./authControler");
 const { Op } = require('sequelize');
-
+const Application=require("../models/Application");
+const User = require("../models/User");
 
 const createJob = asyncErrorHandler(async (req, res) => {
     // get email from token
@@ -31,8 +32,7 @@ const getAllJobs = asyncErrorHandler(async (req, res) => {
           limit: parseInt(limit, 10),
         });
     
-    //   const jobs = await Job.findAllPaginated(Job, options);
-    // const jobs = await Job.findAll();
+       
     console.log(jobs);
     res.status(200).send({
         jobs,
@@ -44,13 +44,29 @@ const getAllJobs = asyncErrorHandler(async (req, res) => {
 const getJobById = asyncErrorHandler(async (req, res) => {
 
     const { jobId } = req.params;
-    const job = await Job.findOne({
+    let job = await Job.findOne({
         where: {
             jobId: jobId,
         }
     });
+    const application=await Application.findOne({
+        where:{
+            JobID:jobId
+        }
+    })
+    const {dataValues}=job
+    if(application){
+        
+        dataValues.application=application.dataValues.length;
+        job={...dataValues}
+    }else{
+        dataValues.application=0
+        job={...dataValues}
+    }
+        
+    console.log(job)
 
-    res.status(200).send({ job })
+    res.status(200).send({...job,success:true})
 
 
 })

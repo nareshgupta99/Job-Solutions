@@ -17,7 +17,7 @@ const isAuthenticated = async (req, res, next) => {
         let token = req.headers.authorization;
 
         if (!token) {
-            throw new ApiError("Invalid Token", 401)
+             new ApiError("Invalid Token", 401)
         }
         token = token.split("Bearer")[1].trim()
         decodedToken = jwt.verify(token, process.env.SECRET);

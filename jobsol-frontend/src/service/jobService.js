@@ -9,5 +9,9 @@ async function createJob(data){
     return await PrivateAxios.post("/employeer/job/create",data);
 }
 
-export {getAllJobs,createJob};
+async function getJobById(id){
+return await PublicAxios.get(`/job/${id}`);
+}
+
+export {getAllJobs,createJob,getJobById};
 

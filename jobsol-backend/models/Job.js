@@ -40,10 +40,9 @@ const Job=sequelize.define("job",{
         allowNull:false
     }
 },{
-    timestamps: false,
+    timestamps: true,
     freezeTableName: true,
 }
-
 )
 
 

@@ -1,21 +1,44 @@
 import React, { useEffect, useState } from 'react'
 import jobsData from '../../data/data'
-import { useParams } from 'react-router-dom'
-import useDelayedRender from '../../hooks/useDelayedRender';
-import Preloader from '../preloader/Preloader';
+import { Link, useParams } from 'react-router-dom'
+import { getJobById } from '../../service/jobService';
+import { applyJob } from '../../service/applicationService';
+import { toast } from 'react-toastify';
+
 
 function JobsDetails() {
     const { jobId } = useParams();
     const [job, setJob] = useState({})
     useEffect(() => {
-        const result = jobsData.find((job) => job.id == jobId)
-        setJob(result)
-        console.log(job)
-    }, [job])
+        getJobById(jobId).then((response) => {
+            const { data } = response
+            data.roleDetails=data.roleDetails.trim();
+            data.jobDescription=data.jobDescription.trim();
+            data.roleDetails = data.roleDetails.split('\n');
+            data.jobDescription = data.jobDescription.split('\n');
+            data.createdAt=data.createdAt.split("T")[0]
+            setJob(data);
+            console.log(data)
+        }).catch((err) => {
+            console.log(err)
 
-    const showComponent = useDelayedRender(1000);
+        })
+    }, [])
 
-    return showComponent ? (
+    const apply=async ()=>{
+        try{
+            const response= await applyJob(job.jobId);
+            toast.success(response.data.message)
+            console.log(response.data)
+        }catch(err){
+            console.log(err)
+            toast.error()
+        }
+    }
+
+
+
+    return (
         // <!-- job post company Start -->
         <div class="job-post-company pt-120 pb-120">
             <div class="container">
@@ -30,12 +53,12 @@ function JobsDetails() {
                                 </div>
                                 <div class="job-tittle">
                                     <a href="#">
-                                        <h4>{job.RoleName}</h4>
+                                        <h4>{job?.profileName}</h4>
                                     </a>
                                     <ul>
-                                        <li>{job.CompanyName}</li>
-                                        <li><i class="fas fa-map-marker-alt"></i>{job.Location}</li>
-                                        <li>{job.sallery}</li>
+                                        <li>{job?.CompanyName}</li>
+                                        <li><i class="fas fa-map-marker-alt"></i>{job?.location}</li>
+                                        <li>{job?.sallery}</li>
                                     </ul>
                                 </div>
                             </div>
@@ -48,7 +71,12 @@ function JobsDetails() {
                                 <div class="small-section-tittle">
                                     <h4>Job Description</h4>
                                 </div>
-                                <p>{job.jobDescription}</p>
+                                {job.jobDescription?.map((des)=>(
+                                    <p>{des}</p>
+
+                                ))
+
+                                 } 
                             </div>
                             <div class="post-details2  mb-50">
                                 {/* <!-- Small Section Tittle --> */}
@@ -56,9 +84,9 @@ function JobsDetails() {
                                     <h4>Required Knowledge, Skills, and Abilities</h4>
                                 </div>
                                 <ul>
-                                    {/* {job.requiredSkills.map((skill)=>(
-                                <li>{skill}</li>
-                               ))} */}
+                                    {job.roleDetails?.map((details)=>(
+                                <li>{details}</li>
+                               ))}
                                 </ul>
                             </div>
                             <div class="post-details2  mb-50">
@@ -83,15 +111,15 @@ function JobsDetails() {
                                 <h4>Job Overview</h4>
                             </div>
                             <ul>
-                                <li>Posted date : <span>{job.postedDate}</span></li>
-                                <li>Location : <span>{job.Location}</span></li>
-                                <li>Vacancy : <span>{job.numberOfOpening}</span></li>
-                                <li>Job nature : <span>{job.jobType}</span></li>
-                                <li>Salary :  <span>$7,800 yearly</span></li>
-                                <li>Application date : <span>{job.postedDate}</span></li>
+                                <li>Posted date : <span>{job?.createdAt}</span></li>
+                                <li>Location : <span>{job?.location}</span></li>
+                                <li>Vacancy : <span>{job?.noOfOpenning}</span></li>
+                                {/* <li>Job nature : <span>{job?.jobType}</span></li> */}
+                                <li>Salary :  <span>${job.sallery}</span></li>
+                                <li>Application date : <span>{job?.createdAt}</span></li>
                             </ul>
                             <div class="apply-btn2">
-                                <a href="#" class="btn">Apply Now</a>
+                                <button onClick={apply} class="btn">Apply Now</button>
                             </div>
                         </div>
                         <div class="post-details4  mb-50">
@@ -111,11 +139,7 @@ function JobsDetails() {
                 </div>
             </div>
         </div>
-    ) :
-        (
-            <Preloader />
-
-        )
+    )
 }
 
 export default JobsDetails

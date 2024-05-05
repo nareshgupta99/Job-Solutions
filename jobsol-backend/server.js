@@ -72,8 +72,8 @@ SeekerProfile.belongsTo(User, { foreignKey: 'UserID', primaryKey: true });
 EmployerProfile.belongsTo(User, { foreignKey: 'UserID', primaryKey: true });
 Job.belongsTo(Category, { through: JobCategory })
 Category.belongsToMany(Job, { through: JobCategory })
-sequelize.query("ALTER TABLE job MODIFY COLUMN jobDescription VARCHAR(500); ")   
-sequelize.query("ALTER TABLE job MODIFY COLUMN roleDetails VARCHAR(500); ")  
+sequelize.query("ALTER TABLE job MODIFY COLUMN jobDescription VARCHAR(2000); ")   
+sequelize.query("ALTER TABLE job MODIFY COLUMN roleDetails VARCHAR(2000); ")  
 
 app.post("/api", asyncErrorHandler( async (req, res) => {
     const { email } = req.body;

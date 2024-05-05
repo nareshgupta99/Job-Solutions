@@ -34,7 +34,7 @@ function JobPosting() {
 
         }catch(err){
             console.log(err)
-            toast.err();
+            toast.error(err.message);
         }
 
     }
@@ -92,7 +92,7 @@ function JobPosting() {
                                     <h5 className="mb-2 fw-bold" >
                                         Location
                                     </h5>
-                                    <input className="mb-2 fw-bold" onChange={handleChange} style={inputBoxStyle} />
+                                    <input className="mb-2 fw-bold" name='location' onChange={handleChange} style={inputBoxStyle} />
 
                                 </div>
                             </div>
