@@ -73,6 +73,7 @@ const uploadResume=asyncErrorHandler(async(req,res)=>{
         UserID:candidate.userId
     }})
     const file = req.file;
+    console.log(file,"file")
     const fileUri=getDataUri(file);
     
     const cloudinaryPublicUrl=await cloudinary.v2.uploader.upload(fileUri.content);

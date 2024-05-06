@@ -9,7 +9,6 @@ const SeekerProfile=sequelize.define("seekerProfile",{
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: false,
     },
     dob:{
         type:DataTypes.DATE
@@ -33,7 +32,6 @@ const SeekerProfile=sequelize.define("seekerProfile",{
     }
     
 });
-
 
 
 

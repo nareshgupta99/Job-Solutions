@@ -27,7 +27,6 @@ const roles=user?.roles
    }
 // checkeing rolewhether it is employeer or not
    if(!checkRoleEmployeer()){
-      // toast.warn("you a")
       navigate("/")
    }
  },[]);

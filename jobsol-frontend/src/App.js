@@ -14,14 +14,33 @@ import AuthRoutes from "./routes/AuthRoutes";
 import Logout from "./component/logout/logout";
 import EmployerProfile from "./component/employeerDashboard/profile/EmployerProfile";
 import EmployeerRoutes from "./routes/EmployeerRoutes";
+import SeekerRoutes from "./routes/SeekerRoutes";
+import { useContext } from "react";
+import AuthContext from "./context/AuthContext";
+import Profile from "./component/seekerProfile/Profile";
 
 function App() {
-  // console.log(user)
+  const {auth}=useContext(AuthContext);
+ const {user}=auth
+  const roles=user?.roles
+  function checkRoleSeeker(){
+    let isSeeker=false;
+    for(let i=0;i<roles?.length;i++){
+      if(roles[i].roleName=='ROLE_SEEKER') isSeeker=true
+    }
+    return isSeeker;
+   }
+
 
   return (
     <BrowserRouter>
 
-      <Navbar />
+    {/* Render navbar if role is seeker or user id logged out */}
+{
+  checkRoleSeeker() || user==null?
+  <Navbar />
+  :""
+}
       <ToastContainer position="top-center" autoClose={5000} />
 
       <Routes>
@@ -30,8 +49,15 @@ function App() {
         <Route path="user/logout" element={<Logout />} />
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/job/:jobId" element={<JobsDetails />} />
+
+        {/* Employeer Route */}
         <Route path="/employeer" element={<EmployeerRoutes />}>
           <Route path="dashboard" element={<Sidebar />} />
+
+        </Route>
+
+        <Route path="/seeker" element={<SeekerRoutes />} >
+          <Route path="profile" element={<Profile />} />
 
         </Route>
 

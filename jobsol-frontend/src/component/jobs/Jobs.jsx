@@ -20,7 +20,7 @@ function Jobs() {
           newJobs[i].createdAt=newJobs[i].createdAt.split("T")[0]
           console.log(newJobs[i].duration)
         }
-        console.log(newJobs)
+        console.log(newJobs.length%10)
         setJobs(newJobs)
         // setJobs(newJobs); // Update jobs state with new data
         //   setPage(prevPage => prevPage + 1); // Increment page number
@@ -53,6 +53,7 @@ function Jobs() {
 
 
   return (
+    <>
     <section class="featured-job-area feature-padding">
       <div class="container">
         {/* <!-- Section Tittle --> */}
@@ -94,6 +95,28 @@ function Jobs() {
         </div>
       </div>
     </section>
+    <div class="pagination-area pb-115 text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="single-wrap d-flex justify-content-center">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                          
+                            <li class="page-item active"><button class="page-link" href="#">01</button></li>
+
+
+                       
+                            
+                        <li class="page-item"><a class="page-link" href="#"><span class="ti-angle-right"></span></a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</>
 
   )
 }
