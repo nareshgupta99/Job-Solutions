@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { MdDelete } from "react-icons/md";
 import { Link } from 'react-router-dom';
+import { deleteJobById, getJobsByEmployeer } from '../../service/jobService';
 
 
 function Jobs() {
-    const [isEdit, setIsEdit] = useState(false)
-    const [jobs, setJobs] = useState([{
-        profileName: "ML Enginner",
+    const [isDelete, setIsDelete] = useState(false)
+    const [jobs, setJobs] = useState([]);
 
+    useEffect(() => {
 
-    }]);
-    const toggleEdit = () => {
-        setIsEdit(!isEdit)
-    }
+        getJobsByEmployeer().then((res) => {
+            setJobs(res.data.jobs)
+            console.log(jobs);
+
+        }).catch(() => {
+
+        })
+
+    }, [isDelete])
+    
 
     const inputBoxStyle = {
         border: "none",
@@ -20,8 +27,16 @@ function Jobs() {
         backgroundColor: "#F2F2F2"
     }
 
-    const handleDelete=()=>{
-
+    const deleteJob = (id) => {
+        // event.preventDefault;
+        console.log(id)
+        try{
+            const res=deleteJobById(id);
+            console.log(res)
+            setIsDelete(!isDelete)
+        }catch(err){
+            console.log(err)
+        }
     }
     useEffect(() => {
 
@@ -46,16 +61,18 @@ function Jobs() {
                                 </thead>
 
                                 <tbody>
+                                    {jobs.map((job) => (
 
-                                    <tr >
-                                        <Link to="">
-                                        <td>Mark</td>
-                                        </Link>
-                                        <td>Thornton</td>
-                                        <td>@fat</td>
-                                        <td><MdDelete style={{ color: "red",cursor:"pointer" }}  onClick={handleDelete}/></td>
+                                        <tr >
+                                            <Link to={`/employeer/apllications/${job.jobId}`}>
+                                                <td>{job.profileName}</td>
+                                            </Link>
+                                            <td>{job.createdAt?.split("T")[0]}</td>
+                                            <td>{job.noOfApplication}</td>
+                                            <td><MdDelete style={{ color: "red", cursor: "pointer" }} onClick={()=>deleteJob(job.jobId)} /></td>
 
-                                    </tr>
+                                        </tr>
+                                    ))}
 
                                 </tbody>
                             </table>                        </div>

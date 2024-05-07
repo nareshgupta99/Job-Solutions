@@ -46,13 +46,19 @@ const uploadProfilePic=asyncErrorHandler(async(req,res)=>{
         const fileUri=getDataUri(file);
         
         const cloudinaryPublicUrl=await cloudinary.v2.uploader.upload(fileUri.content);
+        console.log(cloudinaryPublicUrl.url,"image url")
         if(resSeeker){
-            if(resSeeker.imageUrl)
+            if(resSeeker.imageUrl){
+                await cloudinary.v2.uploader.destroy(resSeeker.imagePublicId);
+            }
             resSeeker.imageUrl=cloudinaryPublicUrl.url;
             resSeeker.imagePublicId=cloudinaryPublicUrl.public_id;
             await resSeeker.save();
         }else{
-           const savedSekker= await SeekerProfile.create({url:cloudinaryPublicUrl.url})
+            let profile={};
+            profile.imageUrl=cloudinaryPublicUrl.url;
+            profile.imagePublicId=cloudinaryPublicUrl.public_id;
+           const savedSekker= await SeekerProfile.create(profile)
            savedSekker.setUser(candidate);
            savedSekker.save();
         }
@@ -117,4 +123,34 @@ const deleteResume=asyncErrorHandler(async(req,res)=>{
    })
 })
 
-module.exports={createSeekerProfile,uploadProfilePic,uploadResume,deleteResume}
+const deleteProfilePic=asyncErrorHandler(async(req,res)=>{
+    const decodedToken = getCredentialFromToken();
+    const candidate = await loadUserByUserName(decodedToken.email);
+    const resSeeker=await SeekerProfile.findOne({where:{
+        UserID:candidate.userId
+    }})
+    result =await cloudinary.v2.uploader.destroy(resSeeker.imagePublicId);
+    resSeeker.imagePublicId="";
+    resSeeker.imageUrl="";
+   await resSeeker.save();
+   res.status(200).json({
+    message:"succefully deleted",
+    success:true
+   })
+})
+
+const getSeekerProfile=async (req,res)=>{
+    const decodedToken = getCredentialFromToken();
+    const candidate = await loadUserByUserName(decodedToken.email);
+    let seekerProfile=await SeekerProfile.findOne({where:{
+        UserID:candidate.userId
+    }})
+
+    res.status(200).send({
+       seekerProfile,
+        success:true
+    })
+
+}
+
+module.exports={createSeekerProfile,uploadProfilePic,uploadResume,deleteResume,deleteProfilePic,getSeekerProfile}

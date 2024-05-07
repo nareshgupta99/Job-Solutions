@@ -13,5 +13,14 @@ async function getJobById(id){
 return await PublicAxios.get(`/job/${id}`);
 }
 
-export {getAllJobs,createJob,getJobById};
+async function getJobsByEmployeer(){
+    const res= await PrivateAxios.get("/jobs/employer");
+    return res;
+}
+
+
+async function deleteJobById(jobId){
+    return await PrivateAxios.delete(`/job/${jobId}`)
+}
+export {getAllJobs,createJob,getJobById,getJobsByEmployeer,deleteJobById};
 

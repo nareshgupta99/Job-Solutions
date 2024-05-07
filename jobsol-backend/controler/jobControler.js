@@ -81,6 +81,21 @@ const getJobsByEmployer = asyncErrorHandler(async (req, res) => {
             employeerId: employer.userId
         }
     });
+     
+
+    for(let i=0;i<jobs.length;i++){
+            let job=jobs[i].dataValues
+            console.log(job)
+        let applications=await Application.findAll({
+            where:{
+                JobID:job.jobId
+            }
+        })
+
+        jobs[i].dataValues.noOfApplication=applications.length
+
+    }
+    console.log(jobs)
 
     res.status(200).send({
         jobs
@@ -114,6 +129,11 @@ const deleteJobByJobId = asyncErrorHandler(async (req, res) => {
         }
     })
     if (job) {
+        await Application.destroy({
+            where:{
+                jobId:jobId
+            }
+        })
         await Job.destroy({
             where: {
                 jobId: jobId

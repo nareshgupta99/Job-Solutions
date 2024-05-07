@@ -4,6 +4,8 @@ const ApiError = require("../utils/ApiError");
 const asyncErrorHandler = require("../utils/asyncErrorHandler");
 const { getCredentialFromToken } = require("../utils/Auth");
 const { loadUserByUserName } = require("./authControler");
+const User = require("../models/User");
+const SeekerProfile=require("../models/SeekerProfile");
 
 const createApplication = asyncErrorHandler(async (req, res, next) => {
     const decodedToken = getCredentialFromToken();
@@ -48,19 +50,49 @@ const getAllApplicationBySeeker = asyncErrorHandler(async (req, res) => {
     const applications=await Application.findAll({where:{
         SeekerID:candidate.userId
     }})
+   
     res.status(200).json({
         applications,
         success:true
     })
 })
 
-const getAllApplicationJobByJobId = asyncErrorHandler(async (req, res) => {
+const getAllApplicationsByJobId = asyncErrorHandler(async (req, res) => {
     const {jobId}=req.params
     const applications=await Application.findAll({
         where:{
             JObID:jobId
         }
     })
+
+    let seekerProfile;
+    let seeker;
+    console.log(applications,"applications")
+    for(let i=0;i<applications.length;i++){
+      seekerProfile= await SeekerProfile .findOne({
+            where:{
+                userId:applications[i].SeekerID
+            }
+        }) 
+        seeker= await User .findOne({
+            where:{
+                userId:applications[i].SeekerID
+            }
+        }) 
+     
+        const name=seekerProfile.dataValues.name
+        const email=seeker.dataValues.email
+        const resume=seekerProfile.dataValues.resumeUrl;
+        const pic=seekerProfile.dataValues.imageUrl;
+        applications[i].dataValues.name=name
+        applications[i].dataValues.email=email
+        applications[i].dataValues.resume=email
+        applications[i].dataValues.resume=resume
+        applications[i].dataValues.pic=pic   
+    }
+    
+
+    
     res.status(200).json({
         applications,
         success:true
@@ -70,11 +102,12 @@ const getAllApplicationJobByJobId = asyncErrorHandler(async (req, res) => {
 
 const updateJobStatusById=asyncErrorHandler(async (req,res)=>{
     const {applicationId}=req.params;
-    const {ApplicationStatus}=req.body;
+    const {status}=req.body;
+    console.log(req.body)
    const application=await  Application.findOne({where:{
         ApplicationId:applicationId
     }})
-    application.ApplicationStatus=ApplicationStatus;
+    application.ApplicationStatus=status;
     await application.save();
     res.status(200).json({
         application,
@@ -83,4 +116,6 @@ const updateJobStatusById=asyncErrorHandler(async (req,res)=>{
     })
 })
 
-module.exports = { createApplication, getAllApplicationJobByJobId, getApplicationById, getAllApplicationBySeeker,updateJobStatusById };
+
+
+module.exports = { createApplication, getAllApplicationsByJobId, getApplicationById, getAllApplicationBySeeker,updateJobStatusById };

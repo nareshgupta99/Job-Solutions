@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 import '../employeerDashboard/sidebar.css';
 import JobPosting from './JobPosting';
 import Jobs from './Jobs';
@@ -22,29 +22,29 @@ function Sidebar() {
                         <i className="lni lni-grid-alt"></i>
                     </button>
                     <div className="sidebar-logo">
-                        <Link to="#">JobSolution</Link>
+                        <Link to="">JobSolution</Link>
                     </div>
                 </div>
                 <ul className="sidebar-nav">
                     <li className="sidebar-item">
-                        <Link to="#" className="sidebar-link">
+                        <Link to="/employeer/profile" className="sidebar-link">
                             <i className="lni lni-user"></i>
                             <span>Profile</span>
                         </Link>
                     </li>
                     <li className="sidebar-item">
-                        <Link to="#" className="sidebar-link">
+                        <Link to="/employeer/job/post" className="sidebar-link">
                             <i className="lni lni-agenda"></i>
                             <span>Post a Job</span>
                         </Link>
                     </li>
                     <li className="sidebar-item">
-                        <Link to="#" className="sidebar-link">
+                        <Link to="/employeer/jobs" className="sidebar-link">
                             <i className="lni lni-popup"></i>
                             <span>Show Jobs</span>
                         </Link>
                     </li>
-                    <li className="sidebar-item">
+                    {/* <li className="sidebar-item">
                         <Link to="#" className="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                             data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
                             <i className="lni lni-protection"></i>
@@ -58,8 +58,8 @@ function Sidebar() {
                                 <Link to="#" className="sidebar-link">Register</Link>
                             </li>
                         </ul>
-                    </li>
-                    <li className="sidebar-item">
+                    </li> */}
+                    {/* <li className="sidebar-item">
                         <Link to="#" className="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                             data-bs-target="#multi" aria-expanded="false" aria-controls="multi">
                             <i className="lni lni-layout"></i>
@@ -81,7 +81,7 @@ function Sidebar() {
                                 </ul>
                             </li>
                         </ul>
-                    </li>
+                    </li> */}
                     <li className="sidebar-item">
                         <Link to="#" className="sidebar-link">
                             <i className="lni lni-popup"></i>
@@ -102,11 +102,9 @@ function Sidebar() {
                     </Link>
                 </div>
             </aside>
-            {/* <EmployerProfile/> */}
-            <JobPosting />
-            {/* <Jobs /> */}
             {/* <Applications /> */}
             {/* <SeekerProfile /> */}
+            <Outlet />
         </div>
     )
 }

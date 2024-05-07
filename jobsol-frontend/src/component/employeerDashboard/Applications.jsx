@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { MdDelete } from "react-icons/md";
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { MdSimCardDownload } from "react-icons/md";
+import { getAllApllicationByJob, updateStatusByApplicationId } from '../../service/applicationService';
+
 
 
 
 function Applications() {
-    const [isEdit, setIsEdit] = useState(false)
-    const [jobs, setJobs] = useState([{
-        profileName: "ML Enginner",
+    const [isEdit, setIsEdit] = useState(false  )
+    const { jobId } = useParams();
+    const [isUpdated,setIsUpdated]=useState();
+    const [applications, setApplications] = useState([]);
 
-
-    }]);
+    const [status,setStatus]=useState();
     const toggleEdit = () => {
         setIsEdit(!isEdit)
     }
@@ -22,12 +24,42 @@ function Applications() {
         backgroundColor: "#F2F2F2"
     }
 
-    const handleDelete = () => {
+    const resumeDownload = (url) => {
 
     }
+
+    const handleSelect=(e)=>{
+        setStatus(e.target.value)
+        console.log(e.target.value)
+    }
+
+    const toogle=()=>{
+        setIsEdit(!isEdit)
+    }
+
+    const updateStatus=async (e,id)=>{
+        e.preventDefault();
+        try{
+            const res=updateStatusByApplicationId(id,{status})
+            console.log(res)
+            setIsEdit(!toogle)
+            setIsUpdated(true)
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+
     useEffect(() => {
 
-    }, []);
+        getAllApllicationByJob(jobId).then((res) => {
+            setApplications(res.data.applications);
+            console.log(res.data)
+        }).catch((err) => {
+            console.log(err)
+        })
+
+    }, [isUpdated]);
 
     return (
         <main className="content px-3 py-4" style={{ width: "100vw" }}>
@@ -43,28 +75,50 @@ function Applications() {
                                         <th scope="col"></th>
                                         <th scope="col">Seeker Name</th>
                                         <th scope="col">email </th>
-                                        <th scope="col">Resume </th>
-                                        <td>Status</td>
-                                        <th scope="col"></th>
+                                        <th scope="col">Status </th>
+                                        <td scope="col">Resume</td>
+                                        {/* <th scope="col"></th> */}
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
 
-                                <tbody>
+                                <tbody>{applications.map((application) => (
+
+
+
 
                                     <tr  >
-                                        <td style={{ width: "70px", height: "70px", }}><img style={{ width: "100%", borderRadius: "50%", marginTop: "0px" }} src="https://imgs.search.brave.com/mR-qTglzpGl8uw83n_ErbMNuZKXcqnfulrRGN17nsn0/rs:fit:860:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvZmVhdHVy/ZWQvY29vbC1wcm9m/aWxlLXBpY3R1cmUt/ODdoNDZnY29iamw1/ZTR4dS5qcGc" /></td>
-                                        <td>Mark</td>
-                                        <td>Thornton</td>
-                                        <td>PENDING</td>
-                                        <td className='' style={{ padding: "15px 10px " }} >
-                                            <button  style={{backgroundColor:"#FB246A"}}><MdSimCardDownload />
-                                            </button></td>
-                                        <td ><button className='' style={{backgroundColor:"#FB246A"}}><MdDelete style={{ color: "white", cursor: "pointer" }} onClick={handleDelete} />
-                                        </button></td>
-                                        <td><button className='btn' style={{ padding: "15px 10px" }}>Update</button></td>
-                                    </tr>
+                                        <td style={{ width: "80px", height: "80px", }}><img style={{ width: "100%", height:"100%",borderRadius: "50%", marginTop: "0px" }} src={application.pic} /></td>
+                                        <td>{application.name}</td>
+                                        <td>{application.email}</td>
 
+                                        <td>
+                                            {isEdit ?
+                                            <div class="form-floating">
+                                            <select class="form-select" id="floatingSelect" aria-label="Floating label select example" name="status" onChange={handleSelect}>
+                                            <option >Select</option>
+                                              <option value="RESUME_VIEWED">RESUME_VIEWED</option>
+                                              <option value="RESUME_SELECTED">RESUME_SELECTED</option>
+                                            </select>
+                                            
+                                          </div>:
+                                                
+                                                <p>{application.ApplicationStatus}</p>
+                                            }
+                                        </td>
+                                        <td className='' style={{ padding: "15px 10px " }} >
+                                            <button style={{ backgroundColor: "#FB246A" }}><MdSimCardDownload  onClick={()=>resumeDownload(application.resume)}/>
+                                            </button></td>
+                                       
+                                        <td>
+                                            {
+                                                isEdit ? <button className='btn' style={{ padding: "15px 10px" }} onClick={(e)=>{updateStatus(e,application.ApplicationId)}}>Update</button> :
+                                                    <button className='btn' style={{ padding: "15px 10px" }} onClick={toogle}>Edit</button>
+                                            }
+
+                                        </td>
+                                    </tr>
+                                ))}
                                 </tbody>
                             </table>
                         </div>

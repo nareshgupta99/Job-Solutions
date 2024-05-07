@@ -10,7 +10,7 @@ router.get("/job",getAllJobs);
 
 router.get("/job/:jobId",getJobById);
 
-router.get("/jobs/employer/",isAuthenticated,hasRole("ROLE_EMPLOYEER"),getJobsByEmployer);
+router.get("/jobs/employer",isAuthenticated,hasRole("ROLE_EMPLOYEER"),getJobsByEmployer);
 
 router.get("/jobs/location/:location",getJobsByLocation);
 

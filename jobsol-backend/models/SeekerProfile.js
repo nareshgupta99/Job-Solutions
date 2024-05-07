@@ -29,6 +29,9 @@ const SeekerProfile=sequelize.define("seekerProfile",{
         type:DataTypes.STRING
     },imagePublicId:{
         type:DataTypes.STRING
+    },
+    currentLocation:{
+        type:DataTypes.STRING
     }
     
 });
