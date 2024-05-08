@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 function JobsDetails() {
     const { jobId } = useParams();
     const [job, setJob] = useState({})
+    
     useEffect(() => {
         getJobById(jobId).then((response) => {
             const { data } = response

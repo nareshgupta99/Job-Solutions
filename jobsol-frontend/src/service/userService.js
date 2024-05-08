@@ -39,4 +39,9 @@ const deleteResume=async()=>{
   return response;
 }
 
-export { updateProfilePic, deleteProfilePic, getSeekerProfile,resumeUpload,deleteResume }
+const getUserDetails=async()=>{
+  const response=await PrivateAxios.get("/user")
+  return response;
+}
+
+export { updateProfilePic, deleteProfilePic, getSeekerProfile,resumeUpload,deleteResume,getUserDetails }

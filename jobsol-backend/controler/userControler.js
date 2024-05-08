@@ -1,45 +1,45 @@
 const mysqlpool = require("../config/db");
-const {checkJwt} = require("../utils/checkAuth");
+const SeekerProfile = require("../models/SeekerProfile");
+const {checkJwt} = require("../utils/Auth");
+const { getCredentialFromToken } = require("../utils/Auth");
+const { loadUserByUserName } = require("./authControler");
 
-
-
-    const UploadPicture = async (req, res) => {
-        // try {
-        //     // const filename = req.file.filename;
-        //     console.log(req.file)
-        //     // const filePath = req.file.path;
-        //     // const [result] = await mysqlpool.query('INSERT INTO profile_pics (filename, path) VALUES (?, ?)', [filename, filePath]);
-        //     // connection.release();
-        //     // res.status(200).send('Profile picture uploaded successfully');
-        // } catch (error) {
-        //     console.error(error);
-        //     res.status(500).send('Error uploading profile picture');
-        // }
-        try {
-            console.log(req.file); // Check if file is received in the request
-            res.status(200).send('Profile picture uploaded successfully');
-        } catch (error) {
-            console.error(error);
-            res.status(500).send('Error uploading profile picture');
-        }
-    };
-    
-    
-
-    const updateUserProfile=async (req,res)=>{
-
-    }
-
-    const uploadResume=async (req,res)=>{
-
-        
-    }
-
-    const getLoggedUser=async (req,res)=>{
+    const getLoggedUser=async (req,response)=>{
         const decodedToken = getCredentialFromToken();
-        const [[employer]] = await loadUserByUserName(decodedToken.username, "employer");
+        let user = await loadUserByUserName(decodedToken.email);
+        user=user.dataValues;
+        const {userId}=user;
+        const role=user.roles;
+        
+        let res=false
+        for(let i=0;i<role.length;i++){
+          let roleName=  role[i].dataValues.roleName;
+          if(roleName=="ROLE_SEEKER"){
+            res=true
+            break;
+          }
+        }
+
+        let userProfile;
+        if(res){
+            userProfile=await SeekerProfile.findOne({
+                where:{
+                    UserId:userId
+                },attributes:['name','imageUrl']
+            })
+        }
+
+        // removing aaray of entry from object
+        let { passwordResetToken,expiresIn,roles,password, ...newuser } = user;
+        const {name,imageUrl}=userProfile.dataValues;
+        
+        newuser={...newuser,name,imageUrl};
+
+        response.json(newuser)
+
+       
         
     }
 
 
-module.exports={UploadPicture,updateUserProfile,uploadResume,getLoggedUser};
+module.exports={getLoggedUser};

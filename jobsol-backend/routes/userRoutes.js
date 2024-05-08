@@ -1,12 +1,9 @@
 const express=require("express");
-const { UploadPicture, updateUserProfile, uploadResume, getAllUsers } = require("../controler/userControler");
-const upload=require("../config/multer");
+const {  getLoggedUser } = require("../controler/userControler");
+const { isAuthenticated } = require("../utils/Auth");
 const router=express.Router();
 
-router.post('/upload', upload.single('profilePic'), UploadPicture);
-router.post('/user/profile',updateUserProfile);
-router.post('/user/resume',uploadResume);
-router.get("/user",getLoggedUser)
+router.get("/user",isAuthenticated,getLoggedUser);
 
 
 

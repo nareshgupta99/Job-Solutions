@@ -3,15 +3,22 @@ import { Link } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import { CgProfile } from "react-icons/cg";
 import { Popover } from "antd";
+import ProfilePopover from '../popover/ProfilePopover';
+import { getUserDetails } from '../../service/userService';
 
 function Navbar() {
     const [isOpen, setIsOpen] = useState(false)
     const { auth } = useContext(AuthContext)
-    useEffect(() => {
-        console.log(auth)
-      
-    }, [auth])
-    
+    const {userDetails}=auth
+    const [profile,setProfile]=useState();
+
+    useEffect(()=>{
+
+        userDetails.then((res)=>{
+            console.log(res.data,"navabar resolved")
+            setProfile(res.data)
+        })
+    },[])
 
     const menueToggler = (e) => {
         e.preventDefault();
@@ -84,7 +91,15 @@ function Navbar() {
                                                 <Link to="/auth/user/signup" className="btn head-btn1">Register</Link>
                                                 <Link to="/auth/user/login" className="btn head-btn2 ">Login</Link>
                                             </>
-                                            : <Link to="/user/logout" className="btn head-btn2 ">logout     </Link>
+                                            : <div className='d-flex '><Link to="/user/logout" className="btn head-btn2 ">logout     </Link>
+                                            <li className="nav-item">
+                                            <Link className="nav-link " to="/auth/user-profile">
+                                              <Popover placement="bottom" content={<ProfilePopover profile={profile}/>} >
+                                                <CgProfile size={35} style={{color:"black"}} />
+                                              </Popover>
+                                            </Link>
+                                          </li>
+                                            </div>
                                         }
                                     </div>
                                 </div>

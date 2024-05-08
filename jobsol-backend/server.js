@@ -60,6 +60,7 @@ app.use("/api", require("./routes/categoryRoute"));
 app.use("/api",require("./routes/applyRoute"));
 app.use("/api",require("./routes/SeekerProfileRote"));
 app.use("/api",require("./routes/employeerProfileRoute"));
+app.use("/api",require("./routes/userRoutes"));
 
 
 

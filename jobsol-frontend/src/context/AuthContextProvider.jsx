@@ -1,18 +1,22 @@
 import React, { useState } from 'react'
 import AuthContext from './AuthContext'
 import { getUserFromToken } from '../service/authService';
+import { getUserDetails } from '../service/userService';
 
 function AuthContextProvider({ children }) {
   const token = localStorage.getItem('token');
   const initialUser = token ? getUserFromToken(token) : null;
+  const initialUserDetails =token ? getUserDetails().then((res)=>res) : null;
   const initialIsLoggedIn = !!token && !!initialUser;
-  console.log(initialUser)
+  console.log(initialUserDetails,"auth context provider")
 
   const [auth,setAuth]=useState({
     user:initialUser,
-    isLoogedIn:initialIsLoggedIn
+    isLoogedIn:initialIsLoggedIn,
+    userDetails:initialUserDetails
   })
 
+  // console.log(initialUserDetails)
   return (
     <AuthContext.Provider value={{ auth,setAuth }}>
       {children}
