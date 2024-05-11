@@ -11,6 +11,7 @@ function SeekerRoutes() {
 
  const {user}=auth
  const roles=user?.roles
+ console.log(user)
 
  console.log("seeker routes")
  

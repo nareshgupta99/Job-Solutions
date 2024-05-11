@@ -6,6 +6,7 @@ import AuthContext from '../../context/AuthContext';
 import { getUserFromToken } from '../../service/authService';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { updateProfile } from '../../service/userService';
 
 function CreateProfile({ role }) {
 
@@ -17,8 +18,7 @@ function CreateProfile({ role }) {
   const [data, setData] = useState({
     name: "",
     contactNumber: "",
-    dob: new Date(),
-    gender: "",
+   currentLocation:""
   })
 
   const changeHandler = (event) => {
@@ -28,6 +28,14 @@ function CreateProfile({ role }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    try{
+      const res =await updateProfile(data);
+      const {message}=res.data
+      toast.success(`${message} redirecting to homepage`)
+      navigate("/");
+    }catch(err){
+      console.log(err)
+    }
     
   }
 
@@ -37,36 +45,20 @@ function CreateProfile({ role }) {
         <div className="row">
           <div className="col-sm-12 col-sm-7">
             <div className="form-group">
-              <input className="form-control valid" name="name" id="name" type="text" placeholder="Denis " onChange={changeHandler} value={data.name} />
+              <input className="form-control valid" name="name" id="name" type="text" placeholder="Enter Name " onChange={changeHandler} value={data.name} />
             </div>
           </div>
           <div className="col-sm-12">
             <div className="form-group">
-              <input className="form-control valid" name="contactNumber" id="contactNumber" type="text" placeholder="12215333367" onChange={changeHandler} value={data.email} />
+              <input className="form-control valid" name="contactNumber" id="contactNumber" type="text" placeholder="Enter Number" onChange={changeHandler} value={data.contactNumber} />
             </div>
           </div>
-          <div className="col-12">
-            <div className="form-group ">
-            <DatePicker selected={data.dob} />
+          <div className="col-sm-12">
+            <div className="form-group">
+              <input className="form-control valid" name="currentLocation" id="currentLocation" type="text" placeholder="Enter city" onChange={changeHandler} value={data.currentLocation} />
             </div>
           </div>
          
-          <div className="col-12">
-            <div className="form-group">
-              <div style={{ display: "flex ", justifyContent: "" }}>
-                <div>
-
-                  <label>Male</label>
-                  <input type="radio" className="" name="gender" onChange={changeHandler} value="male" />
-                </div>
-                <div>
-
-                  <label>Female</label>
-                  <input type="radio" className="" name="gender" onChange={changeHandler} value="female" />
-                </div>
-              </div>
-            </div>
-          </div>
 
         </div>
         <div className="form-group mt-3">

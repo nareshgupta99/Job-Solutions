@@ -64,7 +64,7 @@ function App() {
 
         <Route path="/seeker" element={<SeekerRoutes />} >
           <Route path="profile" element={<Profile />} />
-          <Route path="create" element={<CreateProfile />}/>
+          <Route path="new" element={<CreateProfile />}/>
 
         </Route>
 

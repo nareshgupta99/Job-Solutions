@@ -25,6 +25,7 @@ const createSeekerProfile=asyncErrorHandler (async (req,res)=>{
     seekerProfile.dob=data.dob;
     seekerProfile.contactNumber=data.contactNumber;
     seekerProfile.about=data.about;
+    seekerProfile.currentLocation=data.currentLocation;
     seekerProfile.expectedSallery=data.expectedSallery;
     seekerProfile.save()
     }

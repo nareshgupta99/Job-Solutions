@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import AuthContext from '../../context/AuthContext';
 import { getUserFromToken } from '../../service/authService';
 
-function RegisterCandidate({ role }) {
+function RegisterEmployeer({ role }) {
 
   const {auth,setAuth}=useContext(AuthContext);
 
@@ -83,4 +83,4 @@ function RegisterCandidate({ role }) {
   )
 }
 
-export default RegisterCandidate
+export default RegisterEmployeer;

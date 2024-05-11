@@ -6,9 +6,9 @@ import { getUserDetails } from '../service/userService';
 function AuthContextProvider({ children }) {
   const token = localStorage.getItem('token');
   const initialUser = token ? getUserFromToken(token) : null;
-  const initialUserDetails =token ? getUserDetails() : null;
+  let initialUserDetails =null;
+  if(token) getUserDetails().then((res)=>{initialUserDetails=res;console.log(res)}).catch((err)=>initialUserDetails=null)
   const initialIsLoggedIn = !!token && !!initialUser;
-  console.log(initialUserDetails,"auth context provider")
 
   const [auth,setAuth]=useState({
     user:initialUser,
@@ -16,7 +16,6 @@ function AuthContextProvider({ children }) {
     userDetails:initialUserDetails
   })
 
-  // console.log(initialUserDetails)
   return (
     <AuthContext.Provider value={{ auth,setAuth }}>
       {children}
