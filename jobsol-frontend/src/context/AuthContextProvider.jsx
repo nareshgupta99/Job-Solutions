@@ -5,19 +5,24 @@ import { getUserDetails } from '../service/userService';
 
 function AuthContextProvider({ children }) {
   const token = localStorage.getItem('token');
-  const initialUser = token ? getUserFromToken(token) : null;
-  let initialUserDetails =null;
-  if(token) getUserDetails().then((res)=>{initialUserDetails=res;console.log(res)}).catch((err)=>initialUserDetails=null)
+  let initialUser;
+  if (token) {
+    initialUser = getUserFromToken(token)
+  }
+  let initialUserDetails = token ? getUserDetails() : null
   const initialIsLoggedIn = !!token && !!initialUser;
 
-  const [auth,setAuth]=useState({
-    user:initialUser,
-    isLoogedIn:initialIsLoggedIn,
-    userDetails:initialUserDetails
+
+
+  const [auth, setAuth] = useState({
+    user: initialUser,
+    isLoogedIn: initialIsLoggedIn,
+    userDetails: initialUserDetails
   })
 
+
   return (
-    <AuthContext.Provider value={{ auth,setAuth }}>
+    <AuthContext.Provider value={{ auth, setAuth }}>
       {children}
     </AuthContext.Provider>
   )

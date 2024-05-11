@@ -11,13 +11,11 @@ function Navbar() {
     const { auth } = useContext(AuthContext)
     const {userDetails}=auth
     const [profile,setProfile]=useState();
-    console.log(auth)
 
     useEffect(()=>{
         if(auth.isLoogedIn){
 
             userDetails.then((res)=>{
-                console.log(res.data,"navabar resolved")
                 setProfile(res.data)
             })
         }
@@ -45,7 +43,6 @@ function Navbar() {
     const changeHandler = (e) => {
         e.preventDefault();
         setData({ ...data, [e.target.name]: e.target.value })
-        console.log(data)
     }
 
 
@@ -96,7 +93,7 @@ function Navbar() {
                                             </>
                                             : <div className='d-flex '><Link to="/user/logout" className="btn head-btn2 ">logout     </Link>
                                             <li className="nav-item">
-                                            <Link className="nav-link " to="/auth/user-profile">
+                                            <Link className="nav-link " to="/seeker/profile">
                                               <Popover placement="bottom" content={<ProfilePopover profile={profile}/>} >
                                                 <CgProfile size={35} style={{color:"black"}} />
                                               </Popover>

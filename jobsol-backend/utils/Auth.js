@@ -12,7 +12,6 @@ dotev.config();
 let decodedToken = "";
 
 const isAuthenticated = async (req, res, next) => {
-    console.log("in Authenticated")
     try {
         let token = req.headers.authorization;
 
@@ -21,7 +20,6 @@ const isAuthenticated = async (req, res, next) => {
         }
         token = token.split("Bearer")[1].trim()
         decodedToken = jwt.verify(token, process.env.SECRET);
-        console.log(decodedToken)
         if (Date.now() < new Date(decodedToken.exp)) {
             new ApiError("Jwt Token is Expired", 401);
         }

@@ -16,9 +16,9 @@ dotenv.config();
 const userRegistration = asyncErrorHandler(async (req, res, next) => {
     let user = req.body
     const { roleName } = req.body;
-    console.log(roleName)
+
     const data = await loadUserByUserName(user.email);
-    console.log(data)
+
     if (data && isRoleValid(data.roles, roleName)) {
         next(new ApiError("user is already registerd", 200));
     } else {
@@ -34,13 +34,16 @@ const userRegistration = asyncErrorHandler(async (req, res, next) => {
             data.password = encryptedPassword;
             await data.addRoles(role);
             await data.save();
-            jwt_token = genrateToken({ email: user.email, userId: data.UserId, is_enabled: true });
+            const savedUser = await loadUserByUserName(data.email);
+
+            jwt_token = genrateToken({ email: user.email, userId: data.UserId, is_enabled: true, roles: savedUser.dataValues.roles });
         }
         // if user is not present
         else {
             const savedUser = await User.create(user)
             await savedUser.addRoles(role)// This will insert a new row in the userRole join table
-            jwt_token = genrateToken({ email: user.email, userId: savedUser.UserId, is_enabled: true });
+            const res = await loadUserByUserName(user.email);
+            jwt_token = genrateToken({ email: user.email, userId: savedUser.UserId, is_enabled: true, roles: res.dataValues.roles });
 
         }
 
@@ -49,7 +52,7 @@ const userRegistration = asyncErrorHandler(async (req, res, next) => {
             message: "user Registered successfully",
             token: jwt_token,
             is_enabled: true,
-            success:true
+            success: true
         });
     }
 
@@ -57,15 +60,15 @@ const userRegistration = asyncErrorHandler(async (req, res, next) => {
 
 
 const userLogin = asyncErrorHandler(async (req, res, next) => {
-    console.log("logon bhjfhv")
+
     const { email, password } = req.body;
     const user = await loadUserByUserName(email);
-    console.log("user", user)
+
     if (!user) {
         next(new ApiError("email is not registerd", 401));
-        console.log("else")
+
     } else {
-        console.log("else")
+
         const result = await bcrypt.compare(password, user.password);
         if (!result) {
             next(new ApiError("username or password is wrong", 401));
@@ -76,7 +79,7 @@ const userLogin = asyncErrorHandler(async (req, res, next) => {
                 message: "user login succesfully",
                 token,
                 is_enabled: true,
-                success:true
+                success: true
             })
 
         }
@@ -101,13 +104,13 @@ const forgotPassword = asyncErrorHandler(async (req, res, next) => {
             .toString('hex');
         const expires_in = new Date(Date.now() + (10 * 60 * 1000)).toISOString().slice(0, 19).replace('T', ' ');
 
-        console.log(expires_in)
+
         //genrate a hashed string
         const hashedToken = createHash(reset_token);
         user.passwordResetToken = hashedToken;
         user.expiresIn = expires_in;
         await user.save()
-                //saved into database
+        //saved into database
         const subject = "password change request"
         // const url = `${req.protocol}://${req.get('host')}/api/auth/candidate/reset-password/${reset_token}`;
         const url = `${process.env.ORIGIN}/auth/user/reset/${reset_token}`;
@@ -117,7 +120,7 @@ const forgotPassword = asyncErrorHandler(async (req, res, next) => {
 
         res.status(200).send({
             message: "email sent successfully check your inbox",
-            success:true
+            success: true
         })
     }
 })
@@ -125,24 +128,24 @@ const forgotPassword = asyncErrorHandler(async (req, res, next) => {
 const resetPassword = async (req, res, next) => {
     const { resetToken } = req.params;
     const requestedHash = createHash(resetToken);
-    let user ;
+    let user;
     try {
         user = await User.findOne({ where: { passwordResetToken: requestedHash } })
         if (!user) {
             next(new ApiError("something went wrong try again"));
         }
-      
+
         const expires_in = new Date(user.expiresIn);
         const currentDateTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
         if (expires_in > new Date(currentDateTime)) {
             const saltRounds = 10;
-        const encryptedPassword = await bcrypt.hash(req.body.password, saltRounds);
+            const encryptedPassword = await bcrypt.hash(req.body.password, saltRounds);
             user.password = encryptedPassword;
-            user.passwordResetToken="";
+            user.passwordResetToken = "";
             await user.save();
             res.status(200).json({
                 message: "password set successfully",
-                success:true
+                success: true
             })
         } else {
             next(new ApiError("token is expire ", 400));
@@ -197,7 +200,7 @@ const isRoleValid = (roles, role) => {
 }
 
 
-const getLoggedUser=async (req,res)=>{
+const getLoggedUser = async (req, res) => {
     const decodedToken = getCredentialFromToken();
     const candidate = await loadUserByUserName(decodedToken.email);
     res.status(201).json({
@@ -207,4 +210,4 @@ const getLoggedUser=async (req,res)=>{
     })
 }
 
-module.exports = { userRegistration, userLogin, forgotPassword, resetPassword, verifyEmail, loadUserByUserName,getLoggedUser }
+module.exports = { userRegistration, userLogin, forgotPassword, resetPassword, verifyEmail, loadUserByUserName, getLoggedUser }

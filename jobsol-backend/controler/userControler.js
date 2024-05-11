@@ -8,7 +8,6 @@ const { loadUserByUserName } = require("./authControler");
         const decodedToken = getCredentialFromToken();
         let user = await loadUserByUserName(decodedToken.email);
         let {dataValues}=user
-        console.log(dataValues)
         const {userId}=dataValues;
         const role=dataValues.roles;
         
@@ -32,17 +31,16 @@ const { loadUserByUserName } = require("./authControler");
 
         // removing aaray of entry from object
         let { passwordResetToken,expiresIn,password, ...newuser } = user;
-        // console.log(userProfile,"userProfile")
         if(userProfile){
 
             const {name,imageUrl}=userProfile.dataValues; 
             newuser=  newuser.dataValues;
             newuser={...newuser,name,imageUrl};
-            console.log(newuser,"newuser")
+            newuser.password=null
             response.status(200).json(newuser)
         }else{
-            user.password=null
-            response.status(200).json(user)
+            newuser.password=null
+            response.status(200).json(newuser)
         }
 
 

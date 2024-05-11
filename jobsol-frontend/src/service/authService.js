@@ -54,7 +54,6 @@ function getUserFromToken(token) {
     let decodedToken;
     try {
          decodedToken = JSON.parse(atob(token.split(".")[1])); // decode jwt token
-        console.log('Decoded Token:', decodedToken);
       } catch (error) {
         console.error('Error decoding token:', error);
       }

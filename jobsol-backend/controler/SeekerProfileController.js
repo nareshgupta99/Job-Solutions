@@ -148,6 +148,10 @@ const getSeekerProfile=async (req,res)=>{
     let seekerProfile=await SeekerProfile.findOne({where:{
         UserID:candidate.userId
     }})
+//    seekerProfile.email=decodedToken.email;
+const email=decodedToken.email;
+seekerProfile=seekerProfile.dataValues
+seekerProfile={...seekerProfile,email}
 
     res.status(200).send({
        seekerProfile,

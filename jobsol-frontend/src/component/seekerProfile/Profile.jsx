@@ -42,15 +42,12 @@ const Profile = () => {
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         setImage(file)
-        console.log(image)
-
     }
 
     const deleImage = async (e) => {
         e.preventDefault();
         try {
             const response = await deleteProfilePic();
-            console.log(response)
             setIsUploaded(!isUploaded)
             toast.success()
 
@@ -65,7 +62,6 @@ const Profile = () => {
         try {
             const file = e.target.files[0];
             const response = await resumeUpload(file);
-            console.log(response)
             setIsUploaded(!isUploaded)
             toast.success()
 
@@ -92,35 +88,34 @@ const Profile = () => {
         const fileUrl = profile?.resumeUrl // Replace with your file URL
 
         // Trigger download
-        const anchor = document.createElement('a');
-        anchor.href = fileUrl;
-        anchor.download = 'filename'; // Specify the file name here
-        anchor.click();
+        // const anchor = document.createElement('a');
+        // anchor.href = fileUrl;
+        // anchor.download = `${profile?.name} Resume`; // Specify the file name here
+        // anchor.click();
+        window.open(fileUrl, '_blank');
 
     }
 
-    const changeHandler=(e)=>{
-        setProfile({...profile,[e.target.name]:e.target.value})
-        console.log(profile)
+    const changeHandler = (e) => {
+        setProfile({ ...profile, [e.target.name]: e.target.value })
     }
 
-    const saveProfile=async (e)=>{
+    const saveProfile = async (e) => {
         e.preventDefault()
-        updateProfile(profile).then((res)=>console.log(res)).catch((err)=>console.log(err));
-        setIsContactEdit(!isContactEdit);
-        setIsLocationEdit(!isLocationEdit);
-        setIsNameEdit()
+        updateProfile(profile).then((res) => console.log(res)).catch((err) => console.log(err));
+        setIsContactEdit(false);
+        setIsLocationEdit(false);
+        setIsNameEdit(false)
     }
 
     useEffect(() => {
 
         getSeekerProfile().then((response) => {
-            console.log(response.data.seekerProfile)
             setProfile(response.data.seekerProfile)
         }).catch((err) => {
 
         })
-        //    console.log(res)
+
 
     }, [isUploaded])
 
@@ -154,8 +149,8 @@ const Profile = () => {
                                 {
                                     isNameEdit ?
                                         <>
-                                            <input type='text' name='name' style={inputStyle} onChange={changeHandler}/>
-                                            <IoMdSave style={{ cursor: "pointer" }} onClick={saveProfile}/>
+                                            <input type='text' name='name' style={inputStyle} onChange={changeHandler} />
+                                            <IoMdSave style={{ cursor: "pointer" }} onClick={saveProfile} />
 
                                         </> :
                                         <>
@@ -174,8 +169,8 @@ const Profile = () => {
 
                             {
                                 isLocationEdit ? <>
-                                    <input type='text' name='currentLocation' style={inputStyle} onChange={changeHandler}/>
-                                    <IoMdSave style={{ cursor: "pointer" }} onClick={saveProfile}/>
+                                    <input type='text' name='currentLocation' style={inputStyle} onChange={changeHandler} />
+                                    <IoMdSave style={{ cursor: "pointer" }} onClick={saveProfile} />
 
                                 </> :
                                     <>
@@ -193,7 +188,7 @@ const Profile = () => {
                                     isContactEdit ?
                                         <>
                                             <input type='text' name='contactNumber' style={inputStyle} onChange={changeHandler} />
-                                            <IoMdSave style={{ cursor: "pointer" }} onClick={saveProfile}/>
+                                            <IoMdSave style={{ cursor: "pointer" }} onClick={saveProfile} />
                                         </>
 
 
@@ -213,7 +208,7 @@ const Profile = () => {
 
                             <div>
 
-                                <h6> <CiMail style={{ color: "grey" }} />nareshgupta0899@gmail.com</h6>
+                                <h6> <CiMail style={{ color: "grey" }} />{profile?.email}</h6>
                             </div>
 
                         </div>
@@ -236,15 +231,17 @@ const Profile = () => {
                     <h4 style={{ margin: '10px' }}>Resume </h4>
 
 
-
-                    <div >
-                        <PiDownloadSimple style={{ width: "30px", height: "25px", cursor: "pointer" }} onClick={downloadResume} />
-                        <RiDeleteBin5Line style={{ width: "30px", height: "25px", cursor: "pointer" }} onClick={resumeDelete} />
-
-                    </div>
-
                     <div style={{ border: "2px dotted grey", width: "70%", margin: "auto", padding: "30px", borderRadius: "20px", marginBottom: "10px" }}>
-                        bdnb                    <input type='file' name="resume" onChange={uploadResume} />
+                        {profile?.resumeUrl ? <div >
+                            <PiDownloadSimple style={{ width: "50px", height: "30px", cursor: "pointer" ,border:"1px solid grey",padding:"2px" }} onClick={downloadResume} />
+                            <RiDeleteBin5Line style={{ width: "30px", height: "25px", cursor: "pointer" }} onClick={resumeDelete} />
+
+                        </div> :
+
+                            <input type='file' name="resume" onChange={uploadResume} />
+
+
+                        }
                     </div>
                 </div>
 
