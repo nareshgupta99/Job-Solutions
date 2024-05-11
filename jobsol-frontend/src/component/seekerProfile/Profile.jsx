@@ -31,7 +31,7 @@ const Profile = () => {
         e.preventDefault();
         try {
             const response = await updateProfilePic(image);
-            toast.success()
+            toast.success("image uploaded")
             setIsUploaded(!isUploaded)
 
         } catch (err) {
@@ -49,7 +49,7 @@ const Profile = () => {
         try {
             const response = await deleteProfilePic();
             setIsUploaded(!isUploaded)
-            toast.success()
+            toast.success(response.data.message)
 
         } catch (err) {
             console.log(err)
@@ -63,7 +63,7 @@ const Profile = () => {
             const file = e.target.files[0];
             const response = await resumeUpload(file);
             setIsUploaded(!isUploaded)
-            toast.success()
+            toast.success(response.data.message)
 
         } catch (err) {
             console.log(err)
@@ -74,7 +74,9 @@ const Profile = () => {
         e.preventDefault();
         try {
             const response = await deleteResume();
-            toast.success()
+            toast.success(response.data.message )
+            console.log(response)
+            setIsUploaded(!isUploaded)
 
         } catch (err) {
             console.log(err)
@@ -83,17 +85,14 @@ const Profile = () => {
     }
 
     const downloadResume = () => {
-
         // Your file URL
         const fileUrl = profile?.resumeUrl // Replace with your file URL
-
         // Trigger download
-        // const anchor = document.createElement('a');
-        // anchor.href = fileUrl;
-        // anchor.download = `${profile?.name} Resume`; // Specify the file name here
-        // anchor.click();
-        window.open(fileUrl, '_blank');
-
+        const anchor = document.createElement('a');
+        anchor.href = fileUrl;
+        anchor.download = `${profile?.name} Resume`; // Specify the file name here
+        anchor.click();
+    
     }
 
     const changeHandler = (e) => {
@@ -233,7 +232,10 @@ const Profile = () => {
 
                     <div style={{ border: "2px dotted grey", width: "70%", margin: "auto", padding: "30px", borderRadius: "20px", marginBottom: "10px" }}>
                         {profile?.resumeUrl ? <div >
-                            <PiDownloadSimple style={{ width: "50px", height: "30px", cursor: "pointer" ,border:"1px solid grey",padding:"2px" }} onClick={downloadResume} />
+                            <span style={{border:"1px solid grey",padding:"8px",width:"150px" ,cursor: "pointer"}}>
+                           { ` Resume`}
+                            <PiDownloadSimple style={{ width: "50px", height: "30px",  }} onClick={downloadResume} />
+                                </span>
                             <RiDeleteBin5Line style={{ width: "30px", height: "25px", cursor: "pointer" }} onClick={resumeDelete} />
 
                         </div> :
