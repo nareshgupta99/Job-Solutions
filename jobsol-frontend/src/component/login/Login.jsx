@@ -38,6 +38,7 @@ function Login() {
         // geeting user and roles from token
        const user= getUserFromToken(token);
        setAuth({...auth,user:user,isLoogedIn:true})
+       
         navigate("/home");
       } else{
         toast.error(message)
@@ -71,7 +72,7 @@ function Login() {
         </div>
         <div className="form-group mt-3">
 
-          <button type="submit" className="button button-contactForm boxed-btn w-100" onClick={handleSubmit}>Register</button>
+          <button type="submit" className="button button-contactForm boxed-btn w-100" onClick={handleSubmit}>Login</button>
         </div>
         <Link to={"/auth/user/forgot"} style={{color:"black"}}>Forgot Password</Link>
       </form>

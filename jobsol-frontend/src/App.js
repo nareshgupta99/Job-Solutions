@@ -21,6 +21,7 @@ import Profile from "./component/seekerProfile/Profile";
 import JobPosting from "./component/employeerDashboard/JobPosting";
 import EmployeerJobs from "./component/employeerDashboard/Jobs";
 import Applications from "./component/employeerDashboard/Applications";
+import CreateProfile from "./component/seekerProfile/CreateProfile";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -59,11 +60,11 @@ function App() {
           <Route path="job/post" element={<JobPosting />} />
           <Route path="jobs" element={<EmployeerJobs />} />
           <Route path="apllications/:jobId" element={<Applications />} />
-
         </Route>
 
         <Route path="/seeker" element={<SeekerRoutes />} >
           <Route path="profile" element={<Profile />} />
+          <Route path="create" element={<CreateProfile />}/>
 
         </Route>
 

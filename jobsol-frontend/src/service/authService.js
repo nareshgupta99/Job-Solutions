@@ -49,8 +49,16 @@ const getLoginUser= async()=>{
 }
 
 function getUserFromToken(token) {
-    if (!token) return null;
-    const decodedToken = JSON.parse(atob(token.split(".")[1])); // decode jwt token
+    if (!token || token==='undefined') return null;
+
+    let decodedToken;
+    try {
+         decodedToken = JSON.parse(atob(token.split(".")[1])); // decode jwt token
+        console.log('Decoded Token:', decodedToken);
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    console.log("token",token)
     return {
         email:decodedToken.email,
         is_enabled:decodedToken.is_enabled,

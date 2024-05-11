@@ -11,4 +11,5 @@ router.delete("/seeker/resume",isAuthenticated,hasRole("ROLE_SEEKER"),singleUplo
 router.delete("/seeker/profile/pic",isAuthenticated,hasRole("ROLE_SEEKER"),singleUpload,deleteProfilePic);
 router.get("/seeker/profile",isAuthenticated,hasRole("ROLE_SEEKER"),getSeekerProfile);
 
+
 module.exports=router;

@@ -16,7 +16,7 @@ function ProfilePopover({profile}) {
   console.log(profile,"in popover")
     
 
-  
+  console.log(profile)
     
   const navigate=useNavigate();  
   return (

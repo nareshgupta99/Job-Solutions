@@ -7,9 +7,10 @@ const { loadUserByUserName } = require("./authControler");
     const getLoggedUser=async (req,response)=>{
         const decodedToken = getCredentialFromToken();
         let user = await loadUserByUserName(decodedToken.email);
-        user=user.dataValues;
-        const {userId}=user;
-        const role=user.roles;
+        let {dataValues}=user
+        console.log(dataValues)
+        const {userId}=dataValues;
+        const role=dataValues?.roles;
         
         let res=false
         for(let i=0;i<role.length;i++){
@@ -24,18 +25,25 @@ const { loadUserByUserName } = require("./authControler");
         if(res){
             userProfile=await SeekerProfile.findOne({
                 where:{
-                    UserId:userId
+                    seekerId:userId
                 },attributes:['name','imageUrl']
             })
         }
 
         // removing aaray of entry from object
         let { passwordResetToken,expiresIn,roles,password, ...newuser } = user;
-        const {name,imageUrl}=userProfile.dataValues;
-        
-        newuser={...newuser,name,imageUrl};
+        // console.log(userProfile,"userProfile")
+        if(userProfile){
 
-        response.json(newuser)
+            const {name,imageUrl}=userProfile.dataValues; 
+            newuser=  newuser.dataValues;
+            newuser={...newuser,name,imageUrl};
+            console.log(newuser,"newuser")
+            // response.status(200).json(newuser)
+        }else{
+            response.status(200).json(user.dataValues)
+        }
+
 
        
         

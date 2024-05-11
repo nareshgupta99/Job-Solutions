@@ -20,13 +20,15 @@ const createSeekerProfile=asyncErrorHandler (async (req,res)=>{
     }
     else{
         const data = req.body;
+        console.log(data,"data")
+        seekerProfile.name=data.name;
     seekerProfile.dob=data.dob;
     seekerProfile.contactNumber=data.contactNumber;
     seekerProfile.about=data.about;
     seekerProfile.expectedSallery=data.expectedSallery;
     seekerProfile.save()
     }
-    res.status(200).send({
+    res.status(200).json({
         message: "profile updated succeessfully",
         success:true
     })

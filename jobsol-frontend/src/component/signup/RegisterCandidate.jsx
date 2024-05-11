@@ -13,7 +13,6 @@ function RegisterCandidate({ role }) {
 
 
   const [data, setData] = useState({
-    name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -40,7 +39,8 @@ function RegisterCandidate({ role }) {
         toast.success(message)
         const user= getUserFromToken(token);
        setAuth({...auth,user:user,isLoogedIn:true})
-        navigate("/home");
+
+        // navigate("/");
       } else{
         toast.error(message)
       }
@@ -54,11 +54,6 @@ function RegisterCandidate({ role }) {
     <div className="col-lg-4 border p-3 m-auto">
       <form className="form-contact contact_form" >
         <div className="row">
-          <div className="col-sm-12 col-sm-7">
-            <div className="form-group">
-              <input className="form-control valid" name="name" id="name" type="text" placeholder="Denis " onChange={changeHandler} value={data.name} />
-            </div>
-          </div>
           <div className="col-sm-12">
             <div className="form-group">
               <input className="form-control valid" name="email" id="email" type="email" placeholder="denis@example.com" onChange={changeHandler} value={data.email} />

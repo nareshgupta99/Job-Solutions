@@ -31,7 +31,7 @@ const getAllJobs = asyncErrorHandler(async (req, res) => {
           offset: offset,
           limit: parseInt(limit, 10),
         });
-    
+        
        
     console.log(jobs);
     res.status(200).send({

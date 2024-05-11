@@ -27,7 +27,7 @@ const isAuthenticated = async (req, res, next) => {
         }
         next();
     } catch (err) {
-        res.status(err.status).send({
+        res.status(401).send({
             message: err.message,
             success: false
         })

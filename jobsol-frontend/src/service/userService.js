@@ -44,4 +44,9 @@ const getUserDetails=async()=>{
   return response;
 }
 
-export { updateProfilePic, deleteProfilePic, getSeekerProfile,resumeUpload,deleteResume,getUserDetails }
+const updateProfile=async (profile)=>{
+  const response=await PrivateAxios.post('/seeker/profile',profile)
+  return response;
+}
+
+export { updateProfilePic, deleteProfilePic, getSeekerProfile,resumeUpload,deleteResume,getUserDetails,updateProfile }

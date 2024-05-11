@@ -11,13 +11,16 @@ function Navbar() {
     const { auth } = useContext(AuthContext)
     const {userDetails}=auth
     const [profile,setProfile]=useState();
+    console.log(auth)
 
     useEffect(()=>{
+        if(auth.isLoogedIn){
 
-        userDetails.then((res)=>{
-            console.log(res.data,"navabar resolved")
-            setProfile(res.data)
-        })
+            userDetails.then((res)=>{
+                console.log(res.data,"navabar resolved")
+                setProfile(res.data)
+            })
+        }
     },[])
 
     const menueToggler = (e) => {
