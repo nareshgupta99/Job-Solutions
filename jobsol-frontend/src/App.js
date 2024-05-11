@@ -8,7 +8,6 @@ import JobsDetails from "./component/jobs/JobDetails";
 import RegisterCandidate from "./component/signup/RegisterCandidate";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Sidebar from "./component/employeerDashboard/Sidebar";
 import Login from "./component/login/Login";
 import AuthRoutes from "./routes/AuthRoutes";
 import Logout from "./component/logout/logout";
@@ -22,6 +21,7 @@ import JobPosting from "./component/employeerDashboard/JobPosting";
 import EmployeerJobs from "./component/employeerDashboard/Jobs";
 import Applications from "./component/employeerDashboard/Applications";
 import CreateProfile from "./component/seekerProfile/CreateProfile";
+import ApplicationsStatus from "./component/seekerApplication/ApplicationStatus";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -65,7 +65,7 @@ function App() {
         <Route path="/seeker" element={<SeekerRoutes />} >
           <Route path="profile" element={<Profile />} />
           <Route path="new" element={<CreateProfile />}/>
-
+          <Route path="status" element={<ApplicationsStatus />}/>
         </Route>
 
         <Route path="/auth" element={<AuthRoutes />} >

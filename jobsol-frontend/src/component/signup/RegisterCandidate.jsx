@@ -39,7 +39,7 @@ function RegisterCandidate({ role }) {
         toast.success(message)
         const user= getUserFromToken(token);
        setAuth({...auth,user:user,isLoogedIn:true})
-       
+        if(role==='ROLE_EMPLOYEER') navigate("/employeer/profile")
          navigate("/seeker/new");
        
 

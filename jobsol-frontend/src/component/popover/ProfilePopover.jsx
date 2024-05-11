@@ -1,16 +1,26 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { CgProfile } from "react-icons/cg";
 import { Link, useNavigate } from 'react-router-dom';
+import AuthContext from '../../context/AuthContext';
 
 
 
 
 
 function ProfilePopover({profile}) {
+
+  const {auth}=useContext(AuthContext)
+  const {user}=auth
+  const {roles}=user
+  console.log(roles)
   
   
-  function checkInstructorRole(){
- return false;
+  function employeerRole(){
+    let flag=false
+    for(let i=0;i<roles.length;i++){
+      if(roles[i].roleName==='ROLE_EMPLOYEER') flag=true;
+    }
+ return flag;
   }
  
   const navigate=useNavigate();  
@@ -24,12 +34,15 @@ function ProfilePopover({profile}) {
     :<CgProfile style={{ width: '30%', height: "30%" ,color:"black"}} />
   }
     
-    <p style={{fontSize:"20px"}}> {profile.name }</p></li> </Link>
-   <Link to="" style={{textDecoration:"none"}} > <li className="list-group-item" style={{color:"black"}}>Application status</li> </Link>
-   {checkInstructorRole()?
-   <Link to="/instructor/overview" style={{textDecoration:"none",color:"black"}}> <li className="list-group-item" style={{color:"black"}}>Instructor DashBoard</li> </Link>
-  :""}
+    <p style={{fontSize:"20px"}}> {profile?.name }</p></li> </Link>
+   <Link to="/seeker/status" style={{textDecoration:"none"}} > <li className="list-group-item" style={{color:"black"}}>Application status</li> </Link>
    <Link to="/auth/change-password" style={{textDecoration:"none"}}> <li className="list-group-item" style={{color:"black"}}>Change Password</li> </Link>
+   {
+    employeerRole()?
+    <Link to="/employeer/profile" style={{textDecoration:"none"}}> <li className="list-group-item" style={{color:"black"}}>Employeer Dashboard</li> </Link>
+  :"" 
+  }
+   
    <Link to="/logout"> <li  className="list-group-item " style={{cursor:'pointer',color:"black"}} >Log Out</li> </Link>
   </ul>
 </div>
