@@ -210,4 +210,34 @@ const getLoggedUser = async (req, res) => {
     })
 }
 
-module.exports = { userRegistration, userLogin, forgotPassword, resetPassword, verifyEmail, loadUserByUserName, getLoggedUser }
+const changePassword=async(req,res)=>{
+    const decodedToken = getCredentialFromToken();
+    const user = await loadUserByUserName(decodedToken.email);
+    const data=req.body;
+    const result = await bcrypt.compare(data.OldPassword,user.dataValues.password );
+    if (result){
+        const saltRounds = 10;
+        const encryptedPassword = await bcrypt.hash(data.NewPassword, saltRounds);
+        user.password=encryptedPassword
+        user.save();
+        res.status(200).json({
+            success:true,
+            message:"password updated"
+        }
+    
+        )
+    }
+    else{
+        res.status(400).json({
+            success:false,
+            message:"old password not match"
+        }
+    
+        )
+    }
+
+   
+
+}
+
+module.exports = { userRegistration, userLogin,changePassword, forgotPassword, resetPassword, verifyEmail, loadUserByUserName, getLoggedUser }

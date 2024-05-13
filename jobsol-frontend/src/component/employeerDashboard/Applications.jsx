@@ -24,8 +24,23 @@ function Applications() {
         backgroundColor: "#F2F2F2"
     }
 
-    const resumeDownload = (url) => {
-
+    const resumeDownload = async(url,name) => {
+        const fileUrl =url// Replace with your file URL
+        try {
+            const response = await fetch(fileUrl);
+            const blob = await response.blob();
+            
+            // Create a download link and trigger click to download
+            const url = window.URL.createObjectURL(new Blob([blob]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `${name}_Resume.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+        } catch (error) {
+            console.error('Error downloading PDF:', error);
+        }
     }
 
     const handleSelect=(e)=>{
@@ -107,7 +122,7 @@ function Applications() {
                                             }
                                         </td>
                                         <td className='' style={{ padding: "15px 10px " }} >
-                                            <button style={{ backgroundColor: "#FB246A" }}><MdSimCardDownload  onClick={()=>resumeDownload(application.resume)}/>
+                                            <button style={{ backgroundColor: "#FB246A" }}><MdSimCardDownload  onClick={()=>resumeDownload(application.resume,application.name)}/>
                                             </button></td>
                                        
                                         <td>

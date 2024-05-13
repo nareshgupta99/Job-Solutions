@@ -66,10 +66,12 @@ function getUserFromToken(token) {
   }
 
  
-
+const passwordChange=async(data)=>{
+return PrivateAxios.post("/auth/change/password",data)
+}
   
 
 
 
 
-export {  loginUser ,getToken,forgotPassword,resetPassword,employeerSignup,registerUser,getLoginUser,getUserFromToken}
+export {  loginUser ,getToken,forgotPassword,passwordChange,resetPassword,employeerSignup,registerUser,getLoginUser,getUserFromToken}

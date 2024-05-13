@@ -22,6 +22,7 @@ import EmployeerJobs from "./component/employeerDashboard/Jobs";
 import Applications from "./component/employeerDashboard/Applications";
 import CreateProfile from "./component/seekerProfile/CreateProfile";
 import ApplicationsStatus from "./component/seekerApplication/ApplicationStatus";
+import ChangePassword from "./component/reset/ChangePassword";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -60,12 +61,14 @@ function App() {
           <Route path="job/post" element={<JobPosting />} />
           <Route path="jobs" element={<EmployeerJobs />} />
           <Route path="apllications/:jobId" element={<Applications />} />
+          <Route path="change-password" element={<ChangePassword />} />
         </Route>
 
         <Route path="/seeker" element={<SeekerRoutes />} >
           <Route path="profile" element={<Profile />} />
           <Route path="new" element={<CreateProfile />}/>
           <Route path="status" element={<ApplicationsStatus />}/>
+          <Route path="change-password" element={<ChangePassword />} />
         </Route>
 
         <Route path="/auth" element={<AuthRoutes />} >

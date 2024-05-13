@@ -13,4 +13,8 @@ const updateStatusByApplicationId=async(id,data)=>{
 
 }
 
-export {applyJob,getAllApllicationByJob,updateStatusByApplicationId}
+const getAllApllicationByJobSeeker=async()=>{
+   return await PrivateAxios.get("/job/apply/seeker");
+}
+
+export {applyJob,getAllApllicationByJob,updateStatusByApplicationId,getAllApllicationByJobSeeker}

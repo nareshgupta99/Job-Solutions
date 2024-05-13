@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom';
+import { getAllApllicationByJobSeeker } from '../../service/applicationService';
 
 
 
@@ -11,12 +12,12 @@ function ApplicationsStatus() {
 
     useEffect(() => {
 
-        // getAllApllicationByJob(jobId).then((res) => {
-        //     setApplications(res.data.applications);
-        //     console.log(res.data)
-        // }).catch((err) => {
-        //     console.log(err)
-        // })
+        getAllApllicationByJobSeeker().then((res) => {
+            setApplications(res.data.applications);
+            console.log(res.data.applications)
+        }).catch((err) => {
+            console.log(err)
+        })
 
     }, []);
 
@@ -44,13 +45,13 @@ function ApplicationsStatus() {
 
 
                                     <tr  >
-                                        <td>{"profile Name"}</td>
+                                        <td>{application?.profileName}</td>
 
                                         <td>      
                                                 <p>{"company name"}</p>
                                         </td>
-                                        <td>{"status "}</td>
-                                        <td>{"last updated"}</td>
+                                        <td>{application.ApplicationStatus}</td>
+                                        <td>{application.ApplicationDate?.split("T")[0]}</td>
                                         
                                     </tr>
                                 ))}

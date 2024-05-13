@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import jobsData from '../../data/data'
 import { Link, useParams } from 'react-router-dom'
 import { getJobById } from '../../service/jobService';
 import { applyJob } from '../../service/applicationService';
 import { toast } from 'react-toastify';
+import AuthContext from '../../context/AuthContext';
 
 
 function JobsDetails() {
     const { jobId } = useParams();
     const [job, setJob] = useState({})
+    const {auth}=useContext(AuthContext);
+    const {Applications}=auth
+    const [applied,setApplied]=useState(false);
+
     
     useEffect(() => {
         getJobById(jobId).then((response) => {
@@ -24,13 +29,24 @@ function JobsDetails() {
             console.log(err)
 
         })
+        Applications.then((res)=>{
+            const applications=res.data.applications;
+            for(let i=0;i<applications.length;i++){
+                if(applications[i].JobID==jobId){
+                    setApplied(true);
+                }
+            }
+        }).catch((err)=>{
+
+        })
+        console.log(applied)
     }, [])
 
     const apply=async ()=>{
         try{
             const response= await applyJob(job.jobId);
             toast.success(response.data.message)
-            console.log(response.data)
+            setApplied(true)
         }catch(err){
             console.log(err)
             toast.error()
@@ -120,7 +136,12 @@ function JobsDetails() {
                                 <li>Application date : <span>{job?.createdAt}</span></li>
                             </ul>
                             <div class="apply-btn2">
+                                {applied?
+
+                                    <button class="" style={{padding:"10px",backgroundColor:"green"}} >Applied</button>
+                                    :
                                 <button onClick={apply} class="btn">Apply Now</button>
+                                }
                             </div>
                         </div>
                         <div class="post-details4  mb-50">

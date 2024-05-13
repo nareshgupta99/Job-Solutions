@@ -36,7 +36,7 @@ function ProfilePopover({profile}) {
     
     <p style={{fontSize:"20px"}}> {profile?.name }</p></li> </Link>
    <Link to="/seeker/status" style={{textDecoration:"none"}} > <li className="list-group-item" style={{color:"black"}}>Application status</li> </Link>
-   <Link to="/auth/change-password" style={{textDecoration:"none"}}> <li className="list-group-item" style={{color:"black"}}>Change Password</li> </Link>
+   <Link to="/employeer/change-password" style={{textDecoration:"none"}}> <li className="list-group-item" style={{color:"black"}}>Change Password</li> </Link>
    {
     employeerRole()?
     <Link to="/employeer/profile" style={{textDecoration:"none"}}> <li className="list-group-item" style={{color:"black"}}>Employeer Dashboard</li> </Link>

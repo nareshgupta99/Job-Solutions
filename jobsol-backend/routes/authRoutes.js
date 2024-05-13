@@ -1,5 +1,5 @@
 const express=require("express");
-const {   resetPassword, verifyEmail,  userRegistration,  forgotPassword, userLogin, getLoggedUser } = require("../controler/authControler");
+const {   resetPassword, verifyEmail,  userRegistration,  forgotPassword, userLogin, getLoggedUser, changePassword } = require("../controler/authControler");
 const { isAuthenticated, hasRole } = require("../utils/Auth");
 
 const router=express.Router();
@@ -41,13 +41,12 @@ router.post("/user/signup",userRegistration
  *       '500':
  *         description: user or password is wrong
  */
-// router.post("/candidate/signup",signupCandidate);
+
 router.post("/user/login",userLogin);
 router.post("/user/forgot-password",forgotPassword);
 router.patch("/user/reset-password/:resetToken",resetPassword);
-// router.patch("/user/:verifyToken",verifyEmail);
-
 router.get("/user",isAuthenticated,getLoggedUser);
+router.post("/change/password",isAuthenticated,changePassword)
 
 
 module.exports=router;

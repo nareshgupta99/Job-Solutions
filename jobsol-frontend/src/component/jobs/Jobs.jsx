@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import jobsData from "../../data/data";
 import { getAllJobs } from '../../service/jobService';
 import { Link } from 'react-router-dom';
 import {  } from '../../service/helper';
 
+
 function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,9 +23,6 @@ function Jobs() {
         }
         console.log(newJobs.length%10)
         setJobs(newJobs)
-        // setJobs(newJobs); // Update jobs state with new data
-        //   setPage(prevPage => prevPage + 1); // Increment page number
-        //   console.log(newJobs); // This will log the previous state, not the updated state
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -33,22 +31,10 @@ function Jobs() {
     fetchData(); // Call fetchData immediately when component mounts or when 'page' changes
   }, [page]); // Re-run effect whenever 'page' changes
 
-  const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop
-      === document.documentElement.offsetHeight
-    ) {
-      // Increment 'page' when scrolled to the bottom
-      setPage(prevPage => prevPage + 1);
-    }
+  const nextPage = () => {
+       setPage(page+1)
   };
 
-  // useEffect(() => {
-  //   window.addEventListener('scroll', handleScroll);
-  //   return () => {
-  //     window.removeEventListener('scroll', handleScroll);
-  //   };
-  // }, []); // Add scroll event listener when component mounts and remove on unmount
 
 
 
@@ -108,7 +94,7 @@ function Jobs() {
 
                        
                             
-                        <li class="page-item"><a class="page-link" href="#"><span class="ti-angle-right"></span></a></li>
+                        <li class="page-item"><a class="page-link" href="#"><span class="ti-angle-right" onClick={nextPage}></span></a></li>
                         </ul>
                     </nav>
                 </div>

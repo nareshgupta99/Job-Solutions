@@ -85,7 +85,7 @@ const uploadResume=asyncErrorHandler(async(req,res)=>{
     console.log(file,"file")
     const fileUri=getDataUri(file);
     
-    const cloudinaryPublicUrl=await cloudinary.v2.uploader.upload(fileUri.content);
+    const cloudinaryPublicUrl=await cloudinary.v2.uploader.upload(fileUri.content,{resource_type:'raw'});
     console.log(cloudinaryPublicUrl)
     if(resSeeker){
        

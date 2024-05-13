@@ -6,6 +6,7 @@ const { loadUserByUserName } = require("./authControler");
 const { Op } = require('sequelize');
 const Application=require("../models/Application");
 const User = require("../models/User");
+const EmployerProfile = require("../models/EmployerProfile");
 
 const createJob = asyncErrorHandler(async (req, res) => {
     // get email from token
@@ -27,13 +28,23 @@ const getAllJobs = asyncErrorHandler(async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
     const offset = (page - 1) * limit;
     
-        const jobs = await Job.findAll({
+        let jobs = await Job.findAll({
           offset: offset,
           limit: parseInt(limit, 10),
         });
-        
+
+        // for(let i=0;i<jobs.length;i++){
+        //     let {employeerId}=jobs[i].dataValues.employeerID
+            
+        //     const profile=await EmployerProfile.findOne({where:{
+        //         UserID:employeerId
+        //     }})
+
+        //     let companyName=profile.dataValues.companyName;
+
+        //     jobs={...jobs,companyName}
+        // }
        
-    console.log(jobs);
     res.status(200).send({
         jobs,
         success: true

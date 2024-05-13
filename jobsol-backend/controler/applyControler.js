@@ -48,8 +48,16 @@ const getAllApplicationBySeeker = asyncErrorHandler(async (req, res) => {
     const decodedToken = getCredentialFromToken();
     const candidate = await loadUserByUserName(decodedToken.email);   
     const applications=await Application.findAll({where:{
-        SeekerID:candidate.userId
+        SeekerID:candidate.userId,
     }})
+
+    for(let i=0;i<applications.length;i++){
+      let job= await Job.findOne({where:{
+            jobId:applications[i].dataValues.JobID
+        }})
+        applications[i].dataValues.profileName=job.dataValues.profileName
+        // applications[i].dataValues.profileName
+    }
    
     res.status(200).json({
         applications,
@@ -91,7 +99,6 @@ const getAllApplicationsByJobId = asyncErrorHandler(async (req, res) => {
         applications[i].dataValues.pic=pic   
     }
     
-
     
     res.status(200).json({
         applications,

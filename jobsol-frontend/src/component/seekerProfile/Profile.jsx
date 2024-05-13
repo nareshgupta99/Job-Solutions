@@ -84,15 +84,24 @@ const Profile = () => {
 
     }
 
-    const downloadResume = () => {
+    const downloadResume = async () => {
         // Your file URL
         const fileUrl = profile?.resumeUrl // Replace with your file URL
-        // Trigger download
-        const anchor = document.createElement('a');
-        anchor.href = fileUrl;
-        anchor.download = `${profile?.name} Resume`; // Specify the file name here
-        anchor.click();
-    
+            try {
+                const response = await fetch(fileUrl);
+                const blob = await response.blob();
+                
+                // Create a download link and trigger click to download
+                const url = window.URL.createObjectURL(new Blob([blob]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `${profile?.name}_Resume.pdf`);
+                document.body.appendChild(link);
+                link.click();
+                link.parentNode.removeChild(link);
+            } catch (error) {
+                console.error('Error downloading PDF:', error);
+            }
     }
 
     const changeHandler = (e) => {
