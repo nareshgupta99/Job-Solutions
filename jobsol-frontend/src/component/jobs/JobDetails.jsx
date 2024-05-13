@@ -144,8 +144,8 @@ function JobsDetails() {
                                 }
                             </div>
                         </div>
-                        <div class="post-details4  mb-50">
-                            {/* <!-- Small Section Tittle --> */}
+                        {/* <div class="post-details4  mb-50">
+                            
                             <div class="small-section-tittle">
                                 <h4>Company Information</h4>
                             </div>
@@ -156,7 +156,7 @@ function JobsDetails() {
                                 <li>Web : <span> colorlib.com</span></li>
                                 <li>Email: <span>carrier.colorlib@gmail.com</span></li>
                             </ul>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

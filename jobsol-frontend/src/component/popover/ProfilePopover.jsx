@@ -43,7 +43,7 @@ function ProfilePopover({profile}) {
   :"" 
   }
    
-   <Link to="/logout"> <li  className="list-group-item " style={{cursor:'pointer',color:"black"}} >Log Out</li> </Link>
+   <Link to="/user/logout"> <li  className="list-group-item " style={{cursor:'pointer',color:"black"}} >Log Out</li> </Link>
   </ul>
 </div>
     </div>

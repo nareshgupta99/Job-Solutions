@@ -35,6 +35,10 @@ function Jobs() {
        setPage(page+1)
   };
 
+  const prevPage=()=>{
+    setPage(page-1);
+  }
+
 
 
 
@@ -88,8 +92,10 @@ function Jobs() {
                 <div class="single-wrap d-flex justify-content-center">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-start">
+
+                        <li class="page-item"><a class="page-link" href="#"><span class="ti-angle-left" onClick={prevPage}></span></a></li>
                           
-                            <li class="page-item active"><button class="page-link" href="#">01</button></li>
+                            <li class="page-item active"><button class="page-link" href="#">{page}</button></li>
 
 
                        
