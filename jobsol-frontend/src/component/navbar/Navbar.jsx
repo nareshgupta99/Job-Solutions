@@ -5,6 +5,7 @@ import { CgProfile } from "react-icons/cg";
 import { Popover } from "antd";
 import ProfilePopover from '../popover/ProfilePopover';
 import { getUserDetails } from '../../service/userService';
+import logo from '../../img/logo.jpeg'
 
 function Navbar() {
     const [isOpen, setIsOpen] = useState(false)
@@ -56,9 +57,9 @@ function Navbar() {
                             <div className="col-lg-3 col-md-2">
                                 {/* <!-- Logo --> */}
                                 <div className="logo">
-                                    <Link to="/home">
-                                        <img src="assets/img/logo/logo.png" alt="" />
-
+                                    <Link to="/home" style={{color:"black"}}>
+                                        {/* <img src={logo}  style={{width:"100px"}}alt="" /> */}
+                                        Job Solution
                                     </Link>
                                 </div>
                             </div>
