@@ -23,6 +23,7 @@ import Applications from "./component/employeerDashboard/Applications";
 import CreateProfile from "./component/seekerProfile/CreateProfile";
 import ApplicationsStatus from "./component/seekerApplication/ApplicationStatus";
 import ChangePassword from "./component/reset/ChangePassword";
+import ChatBot from "./component/bot/ChatBot";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -54,6 +55,7 @@ function App() {
         <Route path="user/logout" element={<Logout />} />
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/job/:jobId" element={<JobsDetails />} />
+        <Route path="/chat" element={<ChatBot />} />
 
         {/* Employeer Route */}
         <Route path="/employeer" element={<EmployeerRoutes />}>
