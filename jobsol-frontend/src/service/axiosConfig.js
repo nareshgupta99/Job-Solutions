@@ -24,7 +24,8 @@ import logout from '../component/logout/logout';
           return config;
       }
   },err=>Promise.reject(err))
-    export {PrivateAxios,PublicAxios}
+    
+  export {PrivateAxios,PublicAxios}
 
     PrivateAxios.interceptors.response.use(
       (response) => {
